@@ -1,0 +1,34 @@
+work:
+*   title
+*   author
+   basic (categories?) separator is #
+   library of congress subject
+   min price
+*   quantity available
+   synopsis
+*   image URL
+*   work id
+
+item: (inventory item)
+*   title
+*   author
+   bin
+   binding
+   comments
+   condition
+   cost
+   publication date
+   edition
+   cover binding
+   illustrator
+*   image URL
+   isbn
+   media type
+   keywords
+   notes
+   publication place
+   price
+   publisher
+*   quantity available
+*   work id
+

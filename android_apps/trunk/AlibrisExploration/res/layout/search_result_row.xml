@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent">
+  
+  <ImageView android:id="@+id/search_result_image"
+    android:layout_margin="6dip"
+    android:layout_width="50dip"
+    android:layout_height="75dip"
+    android:layout_centerVertical="true" />
+    
+  <TextView android:id="@+id/search_result_title"
+    android:text="Sample Title"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="6dip"
+    android:layout_marginTop="6dip"
+    android:layout_toRightOf="@id/search_result_image"
+    android:textAppearance="?android:attr/textAppearanceMedium" />
+    
+  <TextView android:id="@+id/search_result_author"
+    android:text="12/20/10 7:15 AM"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_below="@id/search_result_title"
+    android:layout_alignLeft="@id/search_result_title"
+    android:textAppearance="?android:attr/textAppearanceSmall" />
+    
+  <TextView android:id="@+id/search_result_pub_date"
+    android:text="00:00:00"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_below="@id/search_result_title"
+    android:layout_alignParentRight="true"
+    android:gravity="right"
+    android:layout_marginRight="6dip"
+    android:textAppearance="?android:attr/textAppearanceSmall" />
+    
+</RelativeLayout>

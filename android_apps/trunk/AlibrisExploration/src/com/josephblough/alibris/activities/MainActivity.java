@@ -18,6 +18,7 @@ import com.josephblough.alibris.tasks.SearchResultsRetrieverTask;
 import com.josephblough.alibris.transport.SearchRequestConstants;
 
 import android.app.ListActivity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -40,8 +41,9 @@ public class MainActivity extends ListActivity implements OnItemClickListener, O
     
     private static final String TAG = "MainActivity";
     
-    EditText searchTermField;
-    Button submitButton;
+    private EditText searchTermField;
+    private Button submitButton;
+    private ProgressDialog progress;
     
     /** Called when the activity is first created. */
     @Override
@@ -66,6 +68,9 @@ public class MainActivity extends ListActivity implements OnItemClickListener, O
     
     @SuppressWarnings("unchecked")
     private void performSearch() {
+	
+	progress = ProgressDialog.show(this, "", "Searching");
+	
 	Map<String, String> params = new HashMap<String, String>();
 	params.put(SearchRequestConstants.WORKS_SEARCH_FIELDS_ALL, searchTermField.getText().toString());
 	SearchResultsRetrieverTask retriever = new SearchResultsRetrieverTask(MainActivity.this);
@@ -81,10 +86,18 @@ public class MainActivity extends ListActivity implements OnItemClickListener, O
     }
     
     public void error(String error) {
+	if (progress != null) {
+	    progress.dismiss();
+	}
+	
         Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
     }
     
     public void dataReceived(JSONObject data) {
+	if (progress != null) {
+	    progress.dismiss();
+	}
+	
 	try {
 	    JSONArray works = data.getJSONArray("work");
 	    int length = works.length();

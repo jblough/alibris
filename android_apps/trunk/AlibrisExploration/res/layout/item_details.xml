@@ -103,6 +103,7 @@
         android:isIndicator="true"
         android:stepSize="0.1"
         android:layout_gravity="right"
+        style="?android:attr/ratingBarStyleIndicator"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
       
@@ -121,7 +122,7 @@
   <ListView android:id="@+id/item_details_recommendations_list"
     android:visibility="gone"
     android:layout_width="fill_parent"
-    android:layout_height="500dip"/>
+    android:layout_height="550dip"/>
   
 </LinearLayout>
 </ScrollView>    

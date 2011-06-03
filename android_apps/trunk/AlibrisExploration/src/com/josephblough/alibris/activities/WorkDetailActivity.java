@@ -23,8 +23,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RatingBar;
@@ -61,22 +63,36 @@ public class WorkDetailActivity extends Activity implements OnItemClickListener 
 		            Toast.makeText(WorkDetailActivity.this, error, Toast.LENGTH_SHORT).show();
 		        }
 		        
-		        public void dataReceived(JSONObject data) {
+		        public void dataReceived(final JSONObject data) {
 		            ReviewCollection reviews = new ReviewCollection(data);
 		            TextView ratingLabel = (TextView)findViewById(R.id.item_details_overall_rating_label);
 		            RatingBar ratingBar = (RatingBar)findViewById(R.id.item_details_overall_rating);
+		            Button seeReviewsButton = (Button)findViewById(R.id.item_details_reviews_button);
 		            if (reviews.getReviews() != null && reviews.getReviews().size() > 0) {
 		        	Log.d(TAG, "Setting rating to " + reviews.overallRating + " for " + 
 		        		reviews.getReviews().size() + " reviews");
 		        	ratingBar.setRating((float)reviews.overallRating);
 		        	
 		        	ratingLabel.setText("Overall rating: " + Double.toString(reviews.overallRating));
+		        	
+		        	seeReviewsButton.setOnClickListener(new OnClickListener() {
+				    public void onClick(View v) {
+					Intent intent = new Intent(WorkDetailActivity.this, WorkReviewsActivity.class);
+					intent.putExtra(WorkReviewsActivity.REVIEWS_AS_JSON, data.toString());
+					startActivity(intent);
+				    }
+				});
+		        	
 		        	ratingLabel.setVisibility(View.VISIBLE);
 		        	ratingBar.setVisibility(View.VISIBLE);
+		        	seeReviewsButton.setVisibility(View.VISIBLE);
 		            }
 		            else {
-		        	ratingLabel.setVisibility(View.GONE);
+		        	ratingLabel.setText("No reviews at this time");
+		        	
+		        	ratingLabel.setVisibility(View.VISIBLE);
 		        	ratingBar.setVisibility(View.GONE);
+		        	seeReviewsButton.setVisibility(View.GONE);
 		            }
 		        }
 		    });
@@ -122,7 +138,7 @@ public class WorkDetailActivity extends Activity implements OnItemClickListener 
     private synchronized void populateWorkDetails() {
 	ImageView image = (ImageView) findViewById(R.id.item_details_image);
 	image.setTag(work.imageURL);
-	Log.d(TAG, "Displaying image " + image.getTag());
+	//Log.d(TAG, "Displaying image " + image.getTag());
 	
 	imageLoader.displayImage(work.imageURL, image);
 	

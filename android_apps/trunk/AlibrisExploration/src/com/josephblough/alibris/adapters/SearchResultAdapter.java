@@ -3,8 +3,8 @@ package com.josephblough.alibris.adapters;
 import java.util.List;
 
 import com.josephblough.alibris.data.SearchResult;
+import com.josephblough.alibris.ApplicationController;
 import com.josephblough.alibris.R;
-import com.josephblough.alibris.util.ImageLoader;
 
 import android.app.Activity;
 import android.content.Context;
@@ -21,7 +21,7 @@ public class SearchResultAdapter extends ArrayAdapter<SearchResult> {
     private static final String TAG = "SearchResultAdapter";
 
     private static LayoutInflater inflater = null;
-    public ImageLoader imageLoader;
+    private ApplicationController app;
 
     public SearchResultAdapter(Activity context, List<SearchResult> objects) {
 	super(context, R.layout.search_result_row, objects);
@@ -29,7 +29,7 @@ public class SearchResultAdapter extends ArrayAdapter<SearchResult> {
 	Log.d(TAG, "SearchResultAdapter");
 	
         inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        imageLoader = new ImageLoader(context.getApplicationContext());
+        app = (ApplicationController)context.getApplicationContext();
     }
 
     public static class ViewHolder{
@@ -62,7 +62,7 @@ public class SearchResultAdapter extends ArrayAdapter<SearchResult> {
 	holder.pubDateText.setText("");
 	
 	holder.image.setTag(entry.imageURL);
-	imageLoader.displayImage(entry.imageURL, holder.image);
+	app.imageLoader.displayImage(entry.imageURL, holder.image);
 	row.setId(entry.workId);
 	
 	return row;

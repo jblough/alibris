@@ -32,7 +32,8 @@ public class Review {
 	name = json.optString("name", "");
 	location = json.optString("location", "");
 	rating = json.optInt("rating", 0);
-	recommends = json.optBoolean("recommends", false);
+	if (json.has("recommends"))
+	    recommends = json.optBoolean("recommends");
 	body = json.optString("body", "");
     }
 }

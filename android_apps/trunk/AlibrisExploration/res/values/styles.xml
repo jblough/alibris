@@ -14,4 +14,45 @@
         <item name="android:shadowDy">5</item>
         <item name="android:shadowRadius">3.0</item>
     </style>
+    <style name="ReviewNameLabel" parent="@android:style/TextAppearance">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:paddingTop">14dp</item>
+        <item name="android:paddingBottom">1dp</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">left</item>
+        <item name="android:shadowColor">#000000</item>
+        <item name="android:focusable">true</item>
+        <item name="android:shadowDx">0</item>
+        <item name="android:shadowDy">5</item>
+        <item name="android:shadowRadius">3.0</item>
+    </style>
+    <style name="ReviewDateLabel" parent="@android:style/TextAppearance">
+        <item name="android:textSize">13sp</item>
+        <item name="android:paddingTop">14dp</item>
+        <item name="android:paddingLeft">14dp</item>
+        <item name="android:paddingBottom">1dp</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">left</item>
+        <item name="android:shadowColor">#000000</item>
+        <item name="android:focusable">true</item>
+        <item name="android:shadowDx">0</item>
+        <item name="android:shadowDy">5</item>
+        <item name="android:shadowRadius">3.0</item>
+    </style>
+    <style name="ReviewBodyLabel" parent="@android:style/TextAppearance">
+        <item name="android:textSize">10sp</item>
+        <item name="android:paddingTop">14dp</item>
+        <item name="android:paddingBottom">14dp</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">left</item>
+        <item name="android:shadowColor">#000000</item>
+        <item name="android:focusable">true</item>
+        <item name="android:shadowDx">0</item>
+        <item name="android:shadowDy">5</item>
+        <item name="android:shadowRadius">3.0</item>
+    </style>
 </resources>

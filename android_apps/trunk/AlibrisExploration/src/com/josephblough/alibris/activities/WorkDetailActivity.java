@@ -1,19 +1,37 @@
 package com.josephblough.alibris.activities;
 
+import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.josephblough.alibris.R;
+import com.josephblough.alibris.adapters.SearchResultAdapter;
+import com.josephblough.alibris.data.ReviewCollection;
+import com.josephblough.alibris.data.SearchResult;
 import com.josephblough.alibris.data.WorkSearchResult;
+import com.josephblough.alibris.tasks.DataReceiver;
+import com.josephblough.alibris.tasks.RecommendationRetrieverTask;
+import com.josephblough.alibris.tasks.ReviewRetrieverTask;
 import com.josephblough.alibris.util.ImageLoader;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
-public class WorkDetailActivity extends Activity {
+public class WorkDetailActivity extends Activity implements OnItemClickListener {
 
     private static final String TAG = "WorkDetailActivity";
     
@@ -36,13 +54,63 @@ public class WorkDetailActivity extends Activity {
         	if (work.workId > 0) {
         	    this.imageLoader = new ImageLoader(getApplicationContext());
         	    populateWorkDetails();
-        	    /*
-        	    ReviewRetrieverTask reviewRetriever = new ReviewRetrieverTask();
+
+        	    ReviewRetrieverTask reviewRetriever = new ReviewRetrieverTask(new DataReceiver() {
+		        
+		        public void error(String error) {
+		            Toast.makeText(WorkDetailActivity.this, error, Toast.LENGTH_SHORT).show();
+		        }
+		        
+		        public void dataReceived(JSONObject data) {
+		            ReviewCollection reviews = new ReviewCollection(data);
+		            TextView ratingLabel = (TextView)findViewById(R.id.item_details_overall_rating_label);
+		            RatingBar ratingBar = (RatingBar)findViewById(R.id.item_details_overall_rating);
+		            if (reviews.getReviews() != null && reviews.getReviews().size() > 0) {
+		        	Log.d(TAG, "Setting rating to " + reviews.overallRating + " for " + 
+		        		reviews.getReviews().size() + " reviews");
+		        	ratingBar.setRating((float)reviews.overallRating);
+		        	
+		        	ratingLabel.setText("Overall rating: " + Double.toString(reviews.overallRating));
+		        	ratingLabel.setVisibility(View.VISIBLE);
+		        	ratingBar.setVisibility(View.VISIBLE);
+		            }
+		            else {
+		        	ratingLabel.setVisibility(View.GONE);
+		        	ratingBar.setVisibility(View.GONE);
+		            }
+		        }
+		    });
         	    reviewRetriever.execute(work.workId);
 
-        	    RecommendationRetrieverTask recommendationRetriever = new RecommendationRetrieverTask();
+        	    RecommendationRetrieverTask recommendationRetriever = new RecommendationRetrieverTask(new DataReceiver() {
+		        
+		        public void error(String error) {
+		            Toast.makeText(WorkDetailActivity.this, error, Toast.LENGTH_SHORT).show();
+		        }
+		        
+		        public void dataReceived(JSONObject data) {
+		            ListView recommendationList = (ListView)findViewById(R.id.item_details_recommendations_list);
+		            recommendationList.setOnItemClickListener(WorkDetailActivity.this);
+		            try {
+		        	JSONArray works = data.getJSONArray("work");
+		        	int length = works.length();
+		        	List<SearchResult> results = new ArrayList<SearchResult>();
+		        	for (int i=0; i<length; i++) {
+		        	    results.add(new WorkSearchResult(works.getJSONObject(i)));
+		        	}
+
+		        	SearchResultAdapter adapter = new SearchResultAdapter(WorkDetailActivity.this, results);
+		        	recommendationList.setAdapter(adapter);
+		        	recommendationList.setVisibility(View.VISIBLE);
+		            }
+		            catch (JSONException e) {
+		        	recommendationList.setVisibility(View.GONE);
+		        	Log.e(TAG, e.getMessage(), e);
+		            }
+		        }
+		    });
         	    recommendationRetriever.execute(work.workId);
-        	    */
+
         	}
             }
             catch (JSONException e) {
@@ -51,15 +119,27 @@ public class WorkDetailActivity extends Activity {
         }
     }
     
-    private void populateWorkDetails() {
+    private synchronized void populateWorkDetails() {
 	ImageView image = (ImageView) findViewById(R.id.item_details_image);
 	image.setTag(work.imageURL);
+	Log.d(TAG, "Displaying image " + image.getTag());
 	
 	imageLoader.displayImage(work.imageURL, image);
 	
 	((TextView) findViewById(R.id.item_details_title)).setText(work.title);
 	((TextView) findViewById(R.id.item_details_author)).setText(work.author);
-	((TextView) findViewById(R.id.item_details_min_price)).setText(Double.toString(work.minPrice));
+	((TextView) findViewById(R.id.item_details_min_price)).setText(NumberFormat.getCurrencyInstance().format(work.minPrice));
+	((TextView) findViewById(R.id.item_details_available)).setText(Integer.toString(work.quantityAvailable));
 	((TextView) findViewById(R.id.item_details_synopsis)).setText(work.synopsis);
+    }
+
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        ListView recommendationList = (ListView)findViewById(R.id.item_details_recommendations_list);
+	Log.d(TAG, "Clicked on " + recommendationList.getAdapter().getItemId(position) + ", position " + position);
+	final String workAsJson = ((SearchResultAdapter)recommendationList.getAdapter()).getItem(position).toString();
+	
+	Intent intent = new Intent(this, WorkDetailActivity.class);
+	intent.putExtra(WorkDetailActivity.WORK_AS_JSON, workAsJson);
+	startActivity(intent);
     }
 }

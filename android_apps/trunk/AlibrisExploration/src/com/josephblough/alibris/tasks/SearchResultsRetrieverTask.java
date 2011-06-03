@@ -4,7 +4,6 @@ import java.util.Map;
 
 import org.json.JSONObject;
 
-import com.josephblough.alibris.activities.MainActivity;
 import com.josephblough.alibris.transport.DataRetriever;
 
 import android.os.AsyncTask;
@@ -15,9 +14,9 @@ public class SearchResultsRetrieverTask extends
 
     private static final String TAG = "SearchResultsRetrieverTask";
     
-    private MainActivity activity;
-    public SearchResultsRetrieverTask(final MainActivity activity) {
-	this.activity = activity;
+    private DataReceiver receiver;
+    public SearchResultsRetrieverTask(final DataReceiver receiver) {
+	this.receiver = receiver;
     }
     
     @Override
@@ -30,6 +29,7 @@ public class SearchResultsRetrieverTask extends
         super.onPostExecute(result);
         Log.d(TAG, "onPostExecute");
         Log.d(TAG, result.toString());
-        this.activity.publishSearchResults(result);
+        
+        this.receiver.dataReceived(result);
     }
 }

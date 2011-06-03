@@ -11,7 +11,12 @@ public class RecommendationRetrieverTask extends
 	AsyncTask<Integer, Void, JSONObject> {
 
     private static final String TAG = "RecommendationRetrieverTask";
+    private DataReceiver receiver;
 
+    public RecommendationRetrieverTask(DataReceiver receiver) {
+	this.receiver = receiver;
+    }
+    
     @Override
     protected JSONObject doInBackground(Integer... params) {
 	return DataRetriever.getRecommendations(params[0]);
@@ -22,5 +27,7 @@ public class RecommendationRetrieverTask extends
         super.onPostExecute(result);
         Log.d(TAG, "onPostExecute");
         Log.d(TAG, result.toString());
+        
+        receiver.dataReceived(result);
     }
 }

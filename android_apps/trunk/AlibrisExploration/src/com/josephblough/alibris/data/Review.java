@@ -5,15 +5,13 @@ import org.json.JSONObject;
 public class Review {
 
     /**
-	Work_id - Alibris Work ID (Integer)
-	Overall_rating - Average rating from all reviews (Decimal)
-	Id - Alibris Review ID (Integer)
-	Date - Date review was submitted (Date/time)
-	Name - Name of reviewer
-	Location - Location of reviewer
-	Rating - Rating provided by reviewer (Integer)
-	Recommend - Would reviewer recommend review (‘true’ or ‘false’)
-	Body - Body of review
+	id - Alibris Review ID (Integer)
+	date - Date review was submitted (Date/time)
+	name - Name of reviewer
+	location - Location of reviewer
+	rating - Rating provided by reviewer (Integer)
+	recommend - Would reviewer recommend review ('true' or 'false')
+	body - Body of review
      */
     
     public int id;
@@ -27,6 +25,14 @@ public class Review {
     protected JSONObject json;
     
     public Review(JSONObject json) {
+	this.json = json;
 	
+	id = json.optInt("id", -1);
+	date = json.optString("date", "");
+	name = json.optString("name", "");
+	location = json.optString("location", "");
+	rating = json.optInt("rating", 0);
+	recommends = json.optBoolean("recommends", false);
+	body = json.optString("body", "");
     }
 }

@@ -2,16 +2,9 @@ package com.josephblough.alibris.data;
 
 import org.json.JSONObject;
 
-public class Recommendation {
+public class Recommendation extends WorkSearchResult {
 
-    /**
-	Work WORK_ID Work_id     
-     */
-    
-    
-    protected JSONObject json;
-    
     public Recommendation(JSONObject json) {
-	
+	super(json);
     }
 }

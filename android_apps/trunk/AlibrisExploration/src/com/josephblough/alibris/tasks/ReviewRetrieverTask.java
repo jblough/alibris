@@ -11,7 +11,12 @@ public class ReviewRetrieverTask extends
 	AsyncTask<Integer, Void, JSONObject> {
 
     private static final String TAG = "ReviewRetrieverTask";
+    private DataReceiver receiver;
 
+    public ReviewRetrieverTask(final DataReceiver receiver) {
+	this.receiver = receiver;
+    }
+    
     @Override
     protected JSONObject doInBackground(Integer... params) {
 	return DataRetriever.getReviews(params[0]);
@@ -22,5 +27,7 @@ public class ReviewRetrieverTask extends
         super.onPostExecute(result);
         Log.d(TAG, "onPostExecute");
         Log.d(TAG, result.toString());
+        
+        receiver.dataReceived(result);
     }
 }

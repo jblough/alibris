@@ -13,6 +13,7 @@ import com.josephblough.alibris.adapters.SearchResultAdapter;
 import com.josephblough.alibris.data.SearchResult;
 import com.josephblough.alibris.data.WorkSearchResult;
 import com.josephblough.alibris.R;
+import com.josephblough.alibris.tasks.DataReceiver;
 import com.josephblough.alibris.tasks.SearchResultsRetrieverTask;
 import com.josephblough.alibris.transport.SearchRequestConstants;
 
@@ -32,9 +33,10 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.TextView.OnEditorActionListener;
 
-public class MainActivity extends ListActivity implements OnItemClickListener, OnEditorActionListener {
+public class MainActivity extends ListActivity implements OnItemClickListener, OnEditorActionListener, DataReceiver {
     
     private static final String TAG = "MainActivity";
     
@@ -78,9 +80,13 @@ public class MainActivity extends ListActivity implements OnItemClickListener, O
 	submitButton.setVisibility(View.GONE);
     }
     
-    public void publishSearchResults(final JSONObject jsonResult) {
+    public void error(String error) {
+        Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
+    }
+    
+    public void dataReceived(JSONObject data) {
 	try {
-	    JSONArray works = jsonResult.getJSONArray("work");
+	    JSONArray works = data.getJSONArray("work");
 	    int length = works.length();
 	    List<SearchResult> results = new ArrayList<SearchResult>();
 	    for (int i=0; i<length; i++) {

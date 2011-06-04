@@ -1,5 +1,7 @@
 package com.josephblough.alibris.data;
 
+import org.json.JSONObject;
+
 public class ItemSearchResult extends SearchResult {
 
     /**
@@ -56,4 +58,31 @@ public class ItemSearchResult extends SearchResult {
 	34	work_id	427531	Integer	Alibris Work ID
      * 
      */
+    
+    public String sku; 	// bin
+    public String seller;	// sellername
+    public String condition; 	// condition
+    public double price;	// price
+    public String binding;	// binding
+    public String publisher;	// publisher
+    public String notes;	// notes
+    public String sellerReliability; // reliability
+    public String sellerCity;	// sellercity
+    public String sellerState;	// sellerstate
+    public String sellerCountry;// sellercountry
+    
+    public ItemSearchResult(final JSONObject json) {
+	super(json);
+	this.sku = json.optString("bin", "");
+	this.seller = json.optString("sellername", "");
+	this.condition = json.optString("condition", "");
+	this.price = json.optDouble("price", 0.0);
+	this.binding = json.optString("binding", "");
+	this.publisher = json.optString("publisher", "");
+	this.notes = json.optString("notes", "");
+	this.sellerReliability = json.optString("sellerReliability", "");
+	this.sellerCity = json.optString("sellerCity", "");
+	this.sellerState = json.optString("sellerState", "");
+	this.sellerCountry = json.optString("sellerCountry", "");
+    }
 }

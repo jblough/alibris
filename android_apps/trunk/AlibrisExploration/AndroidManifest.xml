@@ -19,6 +19,12 @@
         <activity android:name=".activities.WorkReviewsActivity"
                   android:label="@string/app_name" />
 
+        <activity android:name=".activities.WorkOffersActivity"
+                  android:label="@string/app_name" />
+
+        <activity android:name=".activities.WorkOfferDetailActivity"
+                  android:label="@string/app_name" />
+
     </application>
 
     <uses-permission android:name="android.permission.INTERNET"></uses-permission>

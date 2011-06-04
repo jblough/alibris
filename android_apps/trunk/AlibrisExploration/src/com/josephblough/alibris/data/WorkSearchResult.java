@@ -29,12 +29,7 @@ public class WorkSearchResult extends SearchResult {
     public String synopsis;
     
     public WorkSearchResult(JSONObject json) {
-	this.json = json;
-	this.title = json.optString("title");
-	this.author = json.optString("author");
-	this.imageURL = json.optString("imageurl");
-	this.quantityAvailable = json.optInt("qty_avail", 0);
-	this.workId = json.optInt("work_id", -1);
+	super(json);
 	this.minPrice = json.optDouble("minprice", 0.00);
 	this.synopsis = json.optString("synopsis", "");
     }

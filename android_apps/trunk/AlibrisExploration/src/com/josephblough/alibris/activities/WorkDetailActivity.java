@@ -8,6 +8,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.josephblough.alibris.ApplicationController;
 import com.josephblough.alibris.R;
 import com.josephblough.alibris.adapters.SearchResultAdapter;
 import com.josephblough.alibris.data.ReviewCollection;
@@ -16,11 +17,11 @@ import com.josephblough.alibris.data.WorkSearchResult;
 import com.josephblough.alibris.tasks.DataReceiver;
 import com.josephblough.alibris.tasks.RecommendationRetrieverTask;
 import com.josephblough.alibris.tasks.ReviewRetrieverTask;
-import com.josephblough.alibris.util.ImageLoader;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -39,7 +40,6 @@ public class WorkDetailActivity extends Activity implements OnItemClickListener 
     
     public static final String WORK_AS_JSON = "WorkDetailActivity.work_as_json";
 
-    private ImageLoader imageLoader;
     private WorkSearchResult work;
     
     @Override
@@ -54,7 +54,6 @@ public class WorkDetailActivity extends Activity implements OnItemClickListener 
         	Log.d(TAG, "Read in work " + work.workId);
         	
         	if (work.workId > 0) {
-        	    this.imageLoader = new ImageLoader(getApplicationContext());
         	    populateWorkDetails();
 
         	    ReviewRetrieverTask reviewRetriever = new ReviewRetrieverTask(new DataReceiver() {
@@ -140,13 +139,23 @@ public class WorkDetailActivity extends Activity implements OnItemClickListener 
 	image.setTag(work.imageURL);
 	//Log.d(TAG, "Displaying image " + image.getTag());
 	
-	imageLoader.displayImage(work.imageURL, image);
+	ApplicationController app = (ApplicationController) getApplicationContext();
+	app.imageLoader.displayImage(work.imageURL, image);
 	
 	((TextView) findViewById(R.id.item_details_title)).setText(work.title);
 	((TextView) findViewById(R.id.item_details_author)).setText(work.author);
 	((TextView) findViewById(R.id.item_details_min_price)).setText(NumberFormat.getCurrencyInstance().format(work.minPrice));
 	((TextView) findViewById(R.id.item_details_available)).setText(Integer.toString(work.quantityAvailable));
-	((TextView) findViewById(R.id.item_details_synopsis)).setText(work.synopsis);
+	((TextView) findViewById(R.id.item_details_synopsis)).setText(Html.fromHtml(work.synopsis));
+	
+	((Button) findViewById(R.id.item_details_see_all_offers)).setOnClickListener(new OnClickListener() {
+	    
+	    public void onClick(View v) {
+		Intent intent = new Intent(WorkDetailActivity.this, WorkOffersActivity.class);
+		intent.putExtra(WorkOffersActivity.WORK_ID, work.workId);
+		startActivity(intent);
+	    }
+	});
     }
 
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

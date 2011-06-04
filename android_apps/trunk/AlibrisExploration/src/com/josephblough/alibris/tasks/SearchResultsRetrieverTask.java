@@ -21,15 +21,20 @@ public class SearchResultsRetrieverTask extends
     
     @Override
     protected JSONObject doInBackground(Map<String, String>... params) {
+	Log.d(TAG, "Searching for " + params[0]);
 	return DataRetriever.search(params[0]);
     }
 
     @Override
     protected void onPostExecute(JSONObject result) {
         super.onPostExecute(result);
-        Log.d(TAG, "onPostExecute");
-        Log.d(TAG, result.toString());
-        
-        this.receiver.dataReceived(result);
+        //Log.d(TAG, "onPostExecute");
+        //Log.d(TAG, result.toString());
+        if (result == null) {
+            this.receiver.error("There was an error retrieving your search results");
+        }
+        else {
+            this.receiver.dataReceived(result);
+        }
     }
 }

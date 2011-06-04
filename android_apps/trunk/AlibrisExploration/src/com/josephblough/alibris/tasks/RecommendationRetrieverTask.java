@@ -19,15 +19,21 @@ public class RecommendationRetrieverTask extends
     
     @Override
     protected JSONObject doInBackground(Integer... params) {
+	Log.d(TAG, "Retrieving recommendations for " + params[0]);
 	return DataRetriever.getRecommendations(params[0]);
     }
 
     @Override
     protected void onPostExecute(JSONObject result) {
         super.onPostExecute(result);
-        Log.d(TAG, "onPostExecute");
-        Log.d(TAG, result.toString());
+        //Log.d(TAG, "onPostExecute");
+        //Log.d(TAG, result.toString());
         
-        receiver.dataReceived(result);
+        if (result == null) {
+            receiver.error("There was an error retrieving recommendations");
+        }
+        else {
+            receiver.dataReceived(result);
+        }
     }
 }

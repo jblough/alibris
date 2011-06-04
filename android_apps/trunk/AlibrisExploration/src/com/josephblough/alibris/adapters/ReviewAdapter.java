@@ -7,6 +7,7 @@ import com.josephblough.alibris.R;
 
 import android.app.Activity;
 import android.content.Context;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -59,7 +60,7 @@ public class ReviewAdapter extends ArrayAdapter<Review> {
 
 	holder.nameText.setText(entry.name);
 	holder.dateText.setText(entry.date);
-	holder.bodyText.setText(entry.body);
+	holder.bodyText.setText(Html.fromHtml(entry.body));
 	holder.ratingBar.setMax(5);
 	holder.ratingBar.setRating(entry.rating);
 	

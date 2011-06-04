@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="search_fields">
+        <item>Author</item>
+        <item>Title</item>
+        <item>Topic</item>
+        <item>All Fields</item>
+    </string-array>
+
+</resources>

@@ -4,10 +4,11 @@ Listing of available copies to purchase
 Available copies to purchase details screen
 "Add to cart" option (on details screen or on listing?)
 Filter list of available copies to purchase (rating, condition, ...)
-Add progress indicator during search query
+Add progress indicator during search query - DONE
 Application icon
 Add more search options (both just changing the field to search on and also an "advanced" option)
 Add the ability to save previous searches (both simple and advanced searches can be saved)
 Sorting!!
 Zoom cover image on item details screen 
 Recommended works don't give minimum price
+Put lowest price on the main search results

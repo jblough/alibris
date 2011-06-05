@@ -11,7 +11,7 @@
     android:icon="@drawable/ic_menu_save" />
     
   <item android:id="@+id/change_search_field_menu_item"
-    android:title="Change Search Field"
+    android:title="Search Options"
     android:icon="@drawable/ic_menu_preferences" />
     
   <item android:id="@+id/refresh_menu_item"

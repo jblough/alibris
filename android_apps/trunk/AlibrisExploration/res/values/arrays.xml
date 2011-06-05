@@ -8,4 +8,19 @@
         <item>All Fields</item>
     </string-array>
 
+    <string-array name="search_media_types">
+        <item>Books</item>
+        <item>Music</item>
+        <item>Movies</item>
+        <item>All Media Types</item>
+    </string-array>
+
+    <string-array name="search_sort_order">
+        <item>Rating</item>
+        <item>Title</item>
+        <item>Author</item>
+        <item>Price</item>
+        <item>Date</item>
+    </string-array>
+
 </resources>

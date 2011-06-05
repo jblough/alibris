@@ -73,6 +73,8 @@ public class WorkOffersActivity extends ListActivity implements DataReceiver, On
 	    
 	    WorkOfferAdapter adapter = new WorkOfferAdapter(this, results);
 	    setListAdapter(adapter);
+	    
+	    fakeIt();
 	}
 	catch (JSONException e) {
 	    Log.e(TAG, e.getMessage(), e);
@@ -91,6 +93,14 @@ public class WorkOffersActivity extends ListActivity implements DataReceiver, On
 	Log.d(TAG, "onItemClick");
 	Log.d(TAG, "Clicked on " + getListAdapter().getItemId(position) + ", position " + position);
 	final String workAsJson = ((WorkOfferAdapter)getListAdapter()).getItem(position).toString();
+	
+	Intent intent = new Intent(this, WorkOfferDetailActivity.class);
+	intent.putExtra(WorkOfferDetailActivity.WORK_AS_JSON, workAsJson);
+	startActivity(intent);
+    }
+    
+    private void fakeIt() {
+	final String workAsJson = ((WorkOfferAdapter)getListAdapter()).getItem(0).toString();
 	
 	Intent intent = new Intent(this, WorkOfferDetailActivity.class);
 	intent.putExtra(WorkOfferDetailActivity.WORK_AS_JSON, workAsJson);

@@ -3,24 +3,6 @@
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="fill_parent"
   android:layout_height="fill_parent">
-  
-  <TextView android:id="@+id/work_offer_seller"
-    android:text="Seller"
-    android:layout_alignParentTop="true"
-    android:layout_alignParentLeft="true"
-    style="@style/OfferSellerLabel" />
-
-  <TextView android:id="@+id/work_offer_binding"
-    android:text="Paperback"
-    android:layout_alignParentLeft="true"
-    android:layout_below="@id/work_offer_seller"
-    style="@style/OfferBindingLabel" />
-
-  <TextView android:id="@+id/work_offer_condition"
-    android:text="Condition"
-    android:layout_alignParentLeft="true"
-    android:layout_below="@id/work_offer_binding"
-    style="@style/OfferConditionLabel" />
 
   <TextView android:id="@+id/work_offer_price"
     android:text="$0.00"
@@ -28,5 +10,26 @@
     android:layout_centerVertical="true"
     android:layout_alignParentRight="true"
     style="@style/OfferPriceLabel" />
+  
+  <TextView android:id="@+id/work_offer_seller"
+    android:text="Seller"
+    android:layout_alignParentTop="true"
+    android:layout_alignParentLeft="true"
+    android:layout_toRightOf="@id/work_offer_price"
+    style="@style/OfferSellerLabel" />
+
+  <TextView android:id="@+id/work_offer_binding"
+    android:text="Paperback"
+    android:layout_alignParentLeft="true"
+    android:layout_below="@id/work_offer_seller"
+    android:layout_toRightOf="@id/work_offer_price"
+    style="@style/OfferBindingLabel" />
+
+  <TextView android:id="@+id/work_offer_condition"
+    android:text="Condition"
+    android:layout_alignParentLeft="true"
+    android:layout_below="@id/work_offer_binding"
+    android:layout_toRightOf="@id/work_offer_price"
+    style="@style/OfferConditionLabel" />
   
 </RelativeLayout>

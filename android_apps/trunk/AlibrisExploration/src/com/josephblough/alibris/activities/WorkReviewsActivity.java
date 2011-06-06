@@ -5,6 +5,8 @@ import java.util.List;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.josephblough.alibris.ApplicationController;
+import com.josephblough.alibris.R;
 import com.josephblough.alibris.adapters.ReviewAdapter;
 import com.josephblough.alibris.data.Review;
 import com.josephblough.alibris.data.ReviewCollection;
@@ -25,7 +27,11 @@ public class WorkReviewsActivity extends ListActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
 	super.onCreate(savedInstanceState);
-
+        setContentView(R.layout.work_reviews);
+        
+        final ApplicationController app = (ApplicationController) getApplication();
+        app.initAlibrisHeader(this);
+        
 	final String json = getIntent().getStringExtra(REVIEWS_AS_JSON);
 	if (json != null) {
 	    try {

@@ -85,4 +85,97 @@ public class ItemSearchResult extends SearchResult {
 	this.sellerState = json.optString("sellerState", "");
 	this.sellerCountry = json.optString("sellerCountry", "");
     }
+
+    @Override
+    public int hashCode() {
+	final int prime = 31;
+	int result = 1;
+	result = prime * result + ((binding == null) ? 0 : binding.hashCode());
+	result = prime * result
+		+ ((condition == null) ? 0 : condition.hashCode());
+	result = prime * result + ((notes == null) ? 0 : notes.hashCode());
+	long temp;
+	temp = Double.doubleToLongBits(price);
+	result = prime * result + (int) (temp ^ (temp >>> 32));
+	result = prime * result
+		+ ((publisher == null) ? 0 : publisher.hashCode());
+	result = prime * result + ((seller == null) ? 0 : seller.hashCode());
+	result = prime * result
+		+ ((sellerCity == null) ? 0 : sellerCity.hashCode());
+	result = prime * result
+		+ ((sellerCountry == null) ? 0 : sellerCountry.hashCode());
+	result = prime
+		* result
+		+ ((sellerReliability == null) ? 0 : sellerReliability
+			.hashCode());
+	result = prime * result
+		+ ((sellerState == null) ? 0 : sellerState.hashCode());
+	result = prime * result + ((sku == null) ? 0 : sku.hashCode());
+	return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+	if (this == obj)
+	    return true;
+	if (obj == null)
+	    return false;
+	if (getClass() != obj.getClass())
+	    return false;
+	ItemSearchResult other = (ItemSearchResult) obj;
+	if (binding == null) {
+	    if (other.binding != null)
+		return false;
+	} else if (!binding.equals(other.binding))
+	    return false;
+	if (condition == null) {
+	    if (other.condition != null)
+		return false;
+	} else if (!condition.equals(other.condition))
+	    return false;
+	if (notes == null) {
+	    if (other.notes != null)
+		return false;
+	} else if (!notes.equals(other.notes))
+	    return false;
+	if (Double.doubleToLongBits(price) != Double
+		.doubleToLongBits(other.price))
+	    return false;
+	if (publisher == null) {
+	    if (other.publisher != null)
+		return false;
+	} else if (!publisher.equals(other.publisher))
+	    return false;
+	if (seller == null) {
+	    if (other.seller != null)
+		return false;
+	} else if (!seller.equals(other.seller))
+	    return false;
+	if (sellerCity == null) {
+	    if (other.sellerCity != null)
+		return false;
+	} else if (!sellerCity.equals(other.sellerCity))
+	    return false;
+	if (sellerCountry == null) {
+	    if (other.sellerCountry != null)
+		return false;
+	} else if (!sellerCountry.equals(other.sellerCountry))
+	    return false;
+	if (sellerReliability == null) {
+	    if (other.sellerReliability != null)
+		return false;
+	} else if (!sellerReliability.equals(other.sellerReliability))
+	    return false;
+	if (sellerState == null) {
+	    if (other.sellerState != null)
+		return false;
+	} else if (!sellerState.equals(other.sellerState))
+	    return false;
+	if (sku == null) {
+	    if (other.sku != null)
+		return false;
+	} else if (!sku.equals(other.sku))
+	    return false;
+	return true;
+    }
 }

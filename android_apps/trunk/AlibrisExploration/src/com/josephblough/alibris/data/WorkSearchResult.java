@@ -25,12 +25,13 @@ public class WorkSearchResult extends SearchResult {
 	14	work_id	575838	Work Id
      */
     
-    public double minPrice;
+    public Double minPrice;
     public String synopsis;
     
     public WorkSearchResult(JSONObject json) {
 	super(json);
-	this.minPrice = json.optDouble("minprice", 0.00);
+	if (json.has("minprice"))
+	    this.minPrice = json.optDouble("minprice");
 	this.synopsis = json.optString("synopsis", "");
     }
 }

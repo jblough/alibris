@@ -2,13 +2,19 @@
 <RelativeLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="fill_parent"
-  android:layout_height="fill_parent">
+  android:layout_height="wrap_content">
 
   <TextView android:id="@+id/work_offer_price"
     android:text="$0.00"
-    android:clickable="true"
     android:layout_centerVertical="true"
     android:layout_alignParentRight="true"
+    style="@style/OfferPriceLabel" />
+  
+  <ImageView android:id="@+id/work_offer_add_to_shopping_cart"
+    android:src="@drawable/shoppingcart32"
+    android:layout_below="@id/work_offer_price"
+    android:layout_alignParentRight="true"
+    android:layout_alignParentBottom="true"
     style="@style/OfferPriceLabel" />
   
   <TextView android:id="@+id/work_offer_seller"

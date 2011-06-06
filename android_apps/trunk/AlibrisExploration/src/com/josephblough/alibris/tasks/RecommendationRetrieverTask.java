@@ -33,6 +33,7 @@ public class RecommendationRetrieverTask extends
             receiver.error("There was an error retrieving recommendations");
         }
         else {
+            Log.d(TAG, result.toString());
             receiver.dataReceived(result);
         }
     }

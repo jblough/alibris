@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+  xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <item android:id="@+id/refresh_offers_menu_item"
+    android:title="Refresh"
+    android:icon="@drawable/ic_menu_refresh" />
+
+  <item android:id="@+id/filter_offers_menu_item"
+    android:title="Filter"
+    android:icon="@drawable/ic_menu_search" />
+
+  <item android:id="@+id/offer_options_menu_item"
+    android:title="Options"
+    android:icon="@drawable/ic_menu_preferences" />
+
+</menu>

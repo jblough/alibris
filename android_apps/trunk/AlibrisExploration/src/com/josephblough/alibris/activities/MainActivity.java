@@ -16,6 +16,7 @@ import com.josephblough.alibris.data.SearchCriteria;
 import com.josephblough.alibris.data.SearchCriteriaCollection;
 import com.josephblough.alibris.data.SearchResult;
 import com.josephblough.alibris.data.WorkSearchResult;
+import com.josephblough.alibris.ApplicationController;
 import com.josephblough.alibris.R;
 import com.josephblough.alibris.tasks.DataReceiver;
 import com.josephblough.alibris.tasks.SearchResultsRetrieverTask;
@@ -81,6 +82,9 @@ public class MainActivity extends ListActivity implements OnItemClickListener, O
 	    }
 	});
 
+        final ApplicationController app = (ApplicationController) getApplication();
+        app.initAlibrisHeader(this);
+        
 	getListView().setOnItemClickListener(this);
         registerForContextMenu(getListView());
         
@@ -229,6 +233,8 @@ public class MainActivity extends ListActivity implements OnItemClickListener, O
 			    MainActivity.this.currentSearchSortOrder = search.sort;
 			if (search.reverseSort != null)
 			    MainActivity.this.reverseSearchSort = search.reverseSort;
+			
+			lastSearchName = name;
 			
 			dialog.dismiss();
 			

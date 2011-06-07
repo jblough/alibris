@@ -3,7 +3,6 @@ package com.josephblough.alibris;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.josephblough.alibris.activities.MainActivity;
 import com.josephblough.alibris.activities.ShoppingCartActivity;
 import com.josephblough.alibris.data.ItemSearchResult;
 import com.josephblough.alibris.util.ImageLoader;
@@ -24,6 +23,7 @@ public class ApplicationController extends Application {
     private final static String TAG = "ApplicationController";
     
     public final static String ALIBRIS_URL = "http://www.alibris.com";
+    public final static String ALIBRIS_CART_URL = "http://www.alibris.com/cart?invId=";
     
     public ImageLoader imageLoader;
     public List<ItemSearchResult> shoppingCart = new ArrayList<ItemSearchResult>();
@@ -55,7 +55,20 @@ public class ApplicationController extends Application {
     }
     
     public void checkOut(final Context comingFrom) {
+	StringBuffer url = new StringBuffer(ALIBRIS_CART_URL);
+	boolean first = true;
+	for (ItemSearchResult item : shoppingCart) {
+	    if (first)
+		first = false;
+	    else
+		url.append(',');
+
+	    url.append(item.sku);
+	}
 	
+	Log.d(TAG, "Checkout URL: " + url.toString());
+	final Intent intent = new Intent(Intent.ACTION_VIEW).setData(Uri.parse(url.toString()));
+	comingFrom.startActivity(intent);
     }
     
     public void visitAlibris(final Context comingFrom) {

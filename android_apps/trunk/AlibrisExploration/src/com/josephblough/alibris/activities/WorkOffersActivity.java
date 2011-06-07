@@ -39,6 +39,9 @@ public class WorkOffersActivity extends ListActivity implements DataReceiver, On
     
     private ProgressDialog progress;
     
+    private static final String JSON_RESULT_STRING_KEY = "json.results";
+    private String jsonResults = null;
+
     private int workId;
 
     @Override
@@ -49,15 +52,24 @@ public class WorkOffersActivity extends ListActivity implements DataReceiver, On
         final ApplicationController app = (ApplicationController) getApplication();
         app.initAlibrisHeader(this);
         
-        getListView().setOnItemClickListener(this);
-        registerForContextMenu(getListView());
-        
         this.workId = getIntent().getIntExtra(WORK_ID, -1);
         Log.d(TAG, "Work ID: " + this.workId);
         
-        if (this.workId > 0) {
-            retrieveOffers();
+        if (savedInstanceState != null && savedInstanceState.containsKey(JSON_RESULT_STRING_KEY)) {
+            try {
+        	dataReceived(new JSONObject(savedInstanceState.getString(JSON_RESULT_STRING_KEY)));
+            }
+            catch (JSONException e) {
+        	Log.e(TAG, e.getMessage(), e);
+            }
         }
+        else {
+            if (this.workId > 0) {
+        	retrieveOffers();
+            }
+        }
+        
+        getListView().setOnItemClickListener(this);
     }
 
     @SuppressWarnings("unchecked")
@@ -78,6 +90,7 @@ public class WorkOffersActivity extends ListActivity implements DataReceiver, On
 	}
 	
 	try {
+	    jsonResults = data.toString();
 	    JSONArray works = data.getJSONArray("book");
 	    int length = works.length();
 	    Log.d(TAG, "Retrieved " + length + " offers");
@@ -150,5 +163,15 @@ public class WorkOffersActivity extends ListActivity implements DataReceiver, On
 	app.addToCart(offer);
 	//Log.d(TAG, "Added " + offer.sku + " to cart");
 	((WorkOfferAdapter)getListAdapter()).notifyDataSetChanged();
+	
+	Toast.makeText(this, "Item added to shopping cart", Toast.LENGTH_SHORT).show();
+    }
+    
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        if (jsonResults != null)
+            outState.putString(JSON_RESULT_STRING_KEY, jsonResults);
     }
 }

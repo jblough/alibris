@@ -47,7 +47,15 @@ public class WorkDetailActivity extends Activity implements OnItemClickListener 
     
     public static final String WORK_AS_JSON = "WorkDetailActivity.work_as_json";
 
+    private static final String MIN_PRICE_KEY = "min.price";
+    private static final String JSON_REVIEWS__KEY = "json.reviews";
+    private static final String JSON_RECOMMENDATIONS__KEY = "json.recommendations";
+    private Double asyncMinPrice = null;
+    private String jsonReviews = null;
+    private String jsonRecommendations = null;
+
     private WorkSearchResult work;
+    
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -56,6 +64,15 @@ public class WorkDetailActivity extends Activity implements OnItemClickListener 
         
         final ApplicationController app = (ApplicationController) getApplication();
         app.initAlibrisHeader(this);
+        
+        if (savedInstanceState != null) {
+            if (savedInstanceState.containsKey(MIN_PRICE_KEY))
+        	asyncMinPrice = savedInstanceState.getDouble(MIN_PRICE_KEY);
+            if (savedInstanceState.containsKey(JSON_REVIEWS__KEY))
+        	jsonReviews = savedInstanceState.getString(JSON_REVIEWS__KEY);
+            if (savedInstanceState.containsKey(JSON_RECOMMENDATIONS__KEY))
+        	jsonRecommendations = savedInstanceState.getString(JSON_RECOMMENDATIONS__KEY);
+        }
         
         final String json = getIntent().getStringExtra(WORK_AS_JSON);
         if (json != null) {
@@ -67,27 +84,41 @@ public class WorkDetailActivity extends Activity implements OnItemClickListener 
         	    populateWorkDetails();
 
 		    if (work.minPrice == null) {
-			loadPrice();
+			if (asyncMinPrice != null)
+			    work.minPrice = asyncMinPrice;
+			else
+			    loadPrice();
 		    }
         	    
         	    // Alibris API only allows for 2 calls per second.
-        	    Thread recommendationThread = new Thread(new Runnable() {
-
-        		public void run() {
-        		    loadRecommendations();
-        		}
-        	    });
-        	    
         	    Thread reviewThread = new Thread(new Runnable() {
 
         		public void run() {
         		    loadReviews();
         		}
         	    });
+        	    
+        	    Thread recommendationThread = new Thread(new Runnable() {
+
+        		public void run() {
+        		    loadRecommendations();
+        		}
+        	    });
 
         	    Handler handler = new Handler();
-        	    handler.postDelayed(recommendationThread, 1000);
-        	    handler.postDelayed(reviewThread, 2000);
+        	    if (jsonReviews != null) {
+        		new ReviewsDataReceiver().dataReceived(new JSONObject(jsonReviews));
+        	    }
+        	    else {
+            	    handler.postDelayed(reviewThread, 1000);
+        	    }
+        	    
+        	    if (jsonRecommendations != null) {
+        		new RecommendationsDataReceiver().dataReceived(new JSONObject(jsonRecommendations));
+        	    }
+        	    else {
+        		handler.postDelayed(recommendationThread, 2000);
+        	    }
         	}
             }
             catch (JSONException e) {
@@ -154,6 +185,7 @@ public class WorkDetailActivity extends Activity implements OnItemClickListener 
 		    int length = works.length();
 		    if (length > 0) {
 			ItemSearchResult result = new ItemSearchResult(works.getJSONObject(0));
+			work.minPrice = result.price;
 			((TextView) findViewById(R.id.item_details_min_price)).setText(NumberFormat.getCurrencyInstance().format(result.price));
 		    }
 		}
@@ -189,46 +221,7 @@ public class WorkDetailActivity extends Activity implements OnItemClickListener 
     private void loadReviews(final boolean wait) {
 	Log.d(TAG, "loadReviews");
 	
-	ReviewRetrieverTask reviewRetriever = new ReviewRetrieverTask(new DataReceiver() {
-
-	    public void error(String error) {
-		Toast.makeText(WorkDetailActivity.this, error, Toast.LENGTH_SHORT).show();
-	    }
-
-	    public void dataReceived(final JSONObject data) {
-		ReviewCollection reviews = new ReviewCollection(data);
-		TextView ratingLabel = (TextView)findViewById(R.id.item_details_overall_rating_label);
-		RatingBar ratingBar = (RatingBar)findViewById(R.id.item_details_overall_rating);
-		Button seeReviewsButton = (Button)findViewById(R.id.item_details_reviews_button);
-		if (reviews.getReviews() != null && reviews.getReviews().size() > 0) {
-		    Log.d(TAG, "Setting rating to " + reviews.overallRating + " for " + 
-			    reviews.getReviews().size() + " reviews");
-		    ratingBar.setRating((float)reviews.overallRating);
-
-		    ratingLabel.setText("Overall rating: " + Double.toString(reviews.overallRating));
-
-		    seeReviewsButton.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-			    Intent intent = new Intent(WorkDetailActivity.this, WorkReviewsActivity.class);
-			    intent.putExtra(WorkReviewsActivity.REVIEWS_AS_JSON, data.toString());
-			    startActivity(intent);
-			}
-		    });
-
-		    ratingLabel.setVisibility(View.VISIBLE);
-		    ratingBar.setVisibility(View.VISIBLE);
-		    seeReviewsButton.setVisibility(View.VISIBLE);
-		}
-		else {
-		    ratingLabel.setText("No reviews at this time");
-
-		    ratingLabel.setVisibility(View.VISIBLE);
-		    ratingBar.setVisibility(View.GONE);
-		    seeReviewsButton.setVisibility(View.GONE);
-		}
-	    }
-	});
-	
+	ReviewRetrieverTask reviewRetriever = new ReviewRetrieverTask(new ReviewsDataReceiver());
 	reviewRetriever.execute(work.workId);
 	if (wait) {
 	    try {
@@ -250,33 +243,7 @@ public class WorkDetailActivity extends Activity implements OnItemClickListener 
     private void loadRecommendations(final boolean wait) {
 	Log.d(TAG, "loadRecommendations");
 	
-	RecommendationRetrieverTask recommendationRetriever = new RecommendationRetrieverTask(new DataReceiver() {
-
-	    public void error(String error) {
-		Toast.makeText(WorkDetailActivity.this, error, Toast.LENGTH_SHORT).show();
-	    }
-
-	    public void dataReceived(JSONObject data) {
-		ListView recommendationList = (ListView)findViewById(R.id.item_details_recommendations_list);
-		recommendationList.setOnItemClickListener(WorkDetailActivity.this);
-		try {
-		    JSONArray works = data.getJSONArray("work");
-		    int length = works.length();
-		    List<SearchResult> results = new ArrayList<SearchResult>();
-		    for (int i=0; i<length; i++) {
-			results.add(new WorkSearchResult(works.getJSONObject(i)));
-		    }
-
-		    SearchResultAdapter adapter = new SearchResultAdapter(WorkDetailActivity.this, results);
-		    recommendationList.setAdapter(adapter);
-		    recommendationList.setVisibility(View.VISIBLE);
-		}
-		catch (JSONException e) {
-		    recommendationList.setVisibility(View.GONE);
-		    Log.e(TAG, e.getMessage(), e);
-		}
-	    }
-	});
+	RecommendationRetrieverTask recommendationRetriever = new RecommendationRetrieverTask(new RecommendationsDataReceiver());
 	recommendationRetriever.execute(work.workId);
 	if (wait) {
 	    try {
@@ -286,6 +253,89 @@ public class WorkDetailActivity extends Activity implements OnItemClickListener 
 		Log.e(TAG, e.getMessage(), e);
 	    }
 	    catch (InterruptedException e) {
+		Log.e(TAG, e.getMessage(), e);
+	    }
+	}
+    }
+    
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        if (asyncMinPrice != null)
+            outState.putDouble(MIN_PRICE_KEY, asyncMinPrice);
+        
+        if (jsonReviews != null)
+            outState.putString(JSON_REVIEWS__KEY, jsonReviews);
+        
+        if (jsonRecommendations != null)
+            outState.putString(JSON_RECOMMENDATIONS__KEY, jsonRecommendations);
+    }
+
+    private class ReviewsDataReceiver implements DataReceiver {
+
+	public void error(String error) {
+	    Toast.makeText(WorkDetailActivity.this, error, Toast.LENGTH_SHORT).show();
+	}
+
+	public void dataReceived(final JSONObject data) {
+	    jsonReviews = data.toString();
+	    ReviewCollection reviews = new ReviewCollection(data);
+	    TextView ratingLabel = (TextView)findViewById(R.id.item_details_overall_rating_label);
+	    RatingBar ratingBar = (RatingBar)findViewById(R.id.item_details_overall_rating);
+	    Button seeReviewsButton = (Button)findViewById(R.id.item_details_reviews_button);
+	    if (reviews.getReviews() != null && reviews.getReviews().size() > 0) {
+		Log.d(TAG, "Setting rating to " + reviews.overallRating + " for " + 
+			reviews.getReviews().size() + " reviews");
+		ratingBar.setRating((float)reviews.overallRating);
+
+		ratingLabel.setText("Overall rating: " + Double.toString(reviews.overallRating));
+
+		seeReviewsButton.setOnClickListener(new OnClickListener() {
+		    public void onClick(View v) {
+			Intent intent = new Intent(WorkDetailActivity.this, WorkReviewsActivity.class);
+			intent.putExtra(WorkReviewsActivity.REVIEWS_AS_JSON, data.toString());
+			startActivity(intent);
+		    }
+		});
+
+		ratingLabel.setVisibility(View.VISIBLE);
+		ratingBar.setVisibility(View.VISIBLE);
+		seeReviewsButton.setVisibility(View.VISIBLE);
+	    }
+	    else {
+		ratingLabel.setText("No reviews at this time");
+
+		ratingLabel.setVisibility(View.VISIBLE);
+		ratingBar.setVisibility(View.GONE);
+		seeReviewsButton.setVisibility(View.GONE);
+	    }
+	}
+    }
+    
+    private class RecommendationsDataReceiver implements DataReceiver {
+	public void error(String error) {
+	    Toast.makeText(WorkDetailActivity.this, error, Toast.LENGTH_SHORT).show();
+	}
+
+	public void dataReceived(JSONObject data) {
+	    ListView recommendationList = (ListView)findViewById(R.id.item_details_recommendations_list);
+	    recommendationList.setOnItemClickListener(WorkDetailActivity.this);
+	    try {
+		jsonRecommendations = data.toString();
+		JSONArray works = data.getJSONArray("work");
+		int length = works.length();
+		List<SearchResult> results = new ArrayList<SearchResult>();
+		for (int i=0; i<length; i++) {
+		    results.add(new WorkSearchResult(works.getJSONObject(i)));
+		}
+
+		SearchResultAdapter adapter = new SearchResultAdapter(WorkDetailActivity.this, results);
+		recommendationList.setAdapter(adapter);
+		recommendationList.setVisibility(View.VISIBLE);
+	    }
+	    catch (JSONException e) {
+		recommendationList.setVisibility(View.GONE);
 		Log.e(TAG, e.getMessage(), e);
 	    }
 	}

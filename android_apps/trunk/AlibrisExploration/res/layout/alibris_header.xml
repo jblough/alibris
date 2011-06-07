@@ -17,6 +17,6 @@
  <Button android:id="@+id/button_shopping_cart"
   android:layout_marginLeft="1dip" android:layout_width="wrap_content"
   android:layout_height="wrap_content" android:gravity="center_vertical"
-  android:drawableLeft="@drawable/shoppingcart32" />
+  android:drawableLeft="@drawable/shoppingcart_inverted32" />
 
 </LinearLayout>

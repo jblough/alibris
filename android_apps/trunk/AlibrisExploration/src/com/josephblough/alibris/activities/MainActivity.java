@@ -57,6 +57,8 @@ public class MainActivity extends ListActivity implements OnItemClickListener, O
     private static final int DEFAULT_SEARCH_MEDIA = SearchCriteria.SEARCH_MEDIA_BOOKS_INDEX;
     private static final int DEFAULT_SEARCH_SORT = SearchCriteria.SORT_ORDER_RATING_INDEX;
     
+    private static final String JSON_RESULT_STRING_KEY = "json.results";
+    
     private EditText searchTermField;
     private Button submitButton;
     private ProgressDialog progress;
@@ -66,6 +68,8 @@ public class MainActivity extends ListActivity implements OnItemClickListener, O
     private int currentSearchSortOrder = DEFAULT_SEARCH_SORT;
     private boolean reverseSearchSort = false;
     private String lastSearchName;
+    
+    private String jsonResults = null;
     
     /** Called when the activity is first created. */
     @Override
@@ -89,8 +93,32 @@ public class MainActivity extends ListActivity implements OnItemClickListener, O
         registerForContextMenu(getListView());
         
         searchTermField.setOnEditorActionListener(this);
+        
+        if (savedInstanceState != null && savedInstanceState.containsKey(JSON_RESULT_STRING_KEY)) {
+            try {
+        	hideSearchFields();
+        	dataReceived(new JSONObject(savedInstanceState.getString(JSON_RESULT_STRING_KEY)));
+            }
+            catch (JSONException e) {
+        	Log.e(TAG, e.getMessage(), e);
+            }
+        }
     }
 
+    private void hideSearchFields() {
+	// Hide the keyboard
+	InputMethodManager imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+	imm.hideSoftInputFromWindow(searchTermField.getWindowToken(), 0);
+	
+	searchTermField.setVisibility(View.GONE);
+	submitButton.setVisibility(View.GONE);
+    }
+    
+    private void showSearchFields() {
+	searchTermField.setVisibility(View.VISIBLE);
+	submitButton.setVisibility(View.VISIBLE);
+    }
+    
     @SuppressWarnings("unchecked")
     private void performSearch() {
 	
@@ -100,12 +128,7 @@ public class MainActivity extends ListActivity implements OnItemClickListener, O
 	SearchResultsRetrieverTask retriever = new SearchResultsRetrieverTask(MainActivity.this);
 	retriever.execute(params);
 
-	// Hide the keyboard
-	InputMethodManager imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
-	imm.hideSoftInputFromWindow(searchTermField.getWindowToken(), 0);
-	
-	searchTermField.setVisibility(View.GONE);
-	submitButton.setVisibility(View.GONE);
+	hideSearchFields();
     }
     
     public void error(String error) {
@@ -122,6 +145,7 @@ public class MainActivity extends ListActivity implements OnItemClickListener, O
 	}
 	
 	try {
+	    jsonResults = data.toString();
 	    JSONArray works = data.getJSONArray("work");
 	    int length = works.length();
 	    List<SearchResult> results = new ArrayList<SearchResult>();
@@ -131,6 +155,11 @@ public class MainActivity extends ListActivity implements OnItemClickListener, O
 	    
 	    SearchResultAdapter adapter = new SearchResultAdapter(this, results);
 	    setListAdapter(adapter);
+	    
+	    // Display the search fields if there were no results
+	    if (length == 0) {
+		showSearchFields();
+	    }
 	}
 	catch (JSONException e) {
 	    Log.e(TAG, e.getMessage(), e);
@@ -141,8 +170,7 @@ public class MainActivity extends ListActivity implements OnItemClickListener, O
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
 	if (keyCode == KeyEvent.KEYCODE_SEARCH) {
-	    searchTermField.setVisibility(View.VISIBLE);
-	    submitButton.setVisibility(View.VISIBLE);
+	    showSearchFields();
 	    return true;
 	}
 	return super.onKeyUp(keyCode, event);
@@ -418,5 +446,13 @@ public class MainActivity extends ListActivity implements OnItemClickListener, O
 	}
 	
 	return params;
+    }
+    
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        
+        if (jsonResults != null)
+            outState.putString(JSON_RESULT_STRING_KEY, jsonResults);
     }
 }

@@ -23,4 +23,62 @@
         <item>Date</item>
     </string-array>
 
+    <string-array name="book_condition">
+        <item>New</item>
+        <item>Fine/Like New</item>
+        <item>Very Good</item>
+        <item>Good</item>
+        <item>Fair</item>
+        <item>Poor</item>
+        <item>Any</item>
+    </string-array>
+
+    <string-array name="seller_rating">
+        <item>Best</item>
+        <item>High</item>
+        <item>Average</item>
+        <item>Low</item>
+        <item>Poor</item>
+        <item>Any</item>
+    </string-array>
+    
+    <string-array name="book_bindings">
+        <item>Hardcover</item>
+        <item>Softcover</item>
+        <item>Audiobook CD</item>
+        <item>Audiobook cassette</item>
+    </string-array>
+    
+    <string-array name="music_bindings">
+        <item>CD</item>
+        <item>CD Single</item>
+        <item>SACD</item>
+        <item>DVD-audio</item>
+        <item>Vinyl</item>
+        <item>LP</item>
+        <item>7-inch single</item>
+        <item>12-inch single</item>
+        <item>78 rpm</item>
+        <item>Cassette</item>
+    </string-array>
+    
+    <string-array name="movie_bindings">
+        <item>DVD</item>
+        <item>VHS</item>
+        <item>Blu-ray</item>
+        <item>HD-DVD</item>
+        <item>UMB</item>
+        <item>Laserdisc</item>
+        <item>Beta</item>
+    </string-array>
+    
+    <string-array name="work_offers_filter_sort_order">
+        <item>Rating</item>
+        <item>Title</item>
+        <item>Author</item>
+        <item>Price</item>
+        <item>Date</item>
+        <item>Condition</item>
+    </string-array>
+
 </resources>

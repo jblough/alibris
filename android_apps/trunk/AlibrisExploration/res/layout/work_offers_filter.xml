@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent"
+  android:orientation="vertical">
+  
+  <TextView 
+    android:text="Price between"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content" />
+  <TableLayout
+    android:orientation="horizontal"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:stretchColumns="0,2">
+    <TableRow>
+    <EditText android:id="@+id/work_offers_filter_min_price"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:inputType="numberDecimal"
+       android:hint="minimum"
+       android:paddingLeft="10dip" 
+       android:paddingRight="10dip" />
+     <TextView 
+       android:text="and"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:paddingLeft="10dip" 
+       android:paddingRight="10dip" />
+    <EditText android:id="@+id/work_offers_filter_max_price"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:inputType="numberDecimal"
+       android:hint="maximum"
+       android:paddingLeft="10dip" 
+       android:paddingRight="10dip" />
+    </TableRow>
+  </TableLayout>
+
+  <TextView 
+    android:text="Condition between"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="10dip" />
+  <TableLayout
+    android:orientation="horizontal"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:stretchColumns="0,2">
+    <TableRow>
+     <Spinner android:id="@+id/work_offers_filter_min_condition"
+       android:entries="@array/book_condition"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:paddingLeft="10dip" 
+       android:paddingRight="10dip" />
+     <TextView 
+       android:text="and"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:paddingLeft="10dip" 
+       android:paddingRight="10dip" />
+     <Spinner android:id="@+id/work_offers_filter_max_condition"
+       android:entries="@array/book_condition"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:paddingLeft="10dip" 
+       android:paddingRight="10dip" />
+    </TableRow>
+  </TableLayout>
+
+  <TextView 
+    android:text="Minimum seller rating"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="10dip" />
+  <Spinner android:id="@+id/work_offers_filter_min_seller_rating"
+    android:entries="@array/seller_rating"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:paddingLeft="10dip" 
+    android:paddingRight="10dip" />
+
+  <TextView android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:text="Sort order"
+    android:paddingTop="10dip" />
+    
+  <Spinner android:id="@+id/work_offers_filter_sort"
+    android:entries="@array/work_offers_filter_sort_order"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content" />
+    
+  <CheckBox android:id="@+id/work_offers_filter_reverse_sort"
+    android:text="Reverse sort order"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content" />
+  
+  <!-- 
+  <CheckBox android:id="@+id/work_offers_filter_is_signed"
+    android:text="Only show signed"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content" />
+  
+  <CheckBox android:id="@+id/work_offers_filter_has_dust_jacked"
+    android:text="Has dust jacket"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content" />
+  
+  <CheckBox android:id="@+id/work_offers_filter_first_edition"
+    android:text="First edition"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content" />
+  -->
+  <!-- Book condition, Seller rating, Media type, Binding -->
+  <!-- Is signed, Has dust jacket, First edition -->
+</LinearLayout>

@@ -18,18 +18,20 @@ public class SearchCriteria {
     public static final int SORT_ORDER_PRICE_INDEX = 3;
     public static final int SORT_ORDER_DATE_INDEX = 4;
     
+    public static final int DEFAULT_SEARCH_MEDIA = SEARCH_MEDIA_BOOKS_INDEX;
+    public static final int DEFAULT_SEARCH_SORT = SORT_ORDER_RATING_INDEX;
     
     /*
      * Pieces of information that can be searched on:
      * 	which field : author, title, topic, or all
      * 	search parameter : string to search on
      */
-    
-    public String searchTerm;
-    public Integer field;
-    public Integer media;
-    public Integer sort;
-    public Boolean reverseSort;
+
+    public String searchTerm = "";
+    public int field = SEARCH_ALL_INDEX;
+    public int media = DEFAULT_SEARCH_MEDIA;
+    public int sort = DEFAULT_SEARCH_SORT;
+    public boolean reverseSort = false;
     
     public SearchCriteria(final String searchTerm, final int field) {
 	this.searchTerm = searchTerm;
@@ -49,9 +51,5 @@ public class SearchCriteria {
 	this.media = media;
 	this.sort = sort;
 	this.reverseSort = reverseSort;
-    }
-    
-    public String toJson() {
-	return null;
     }
 }

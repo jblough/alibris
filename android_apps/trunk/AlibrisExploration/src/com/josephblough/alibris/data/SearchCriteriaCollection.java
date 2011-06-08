@@ -94,12 +94,9 @@ public class SearchCriteriaCollection {
 		SearchCriteria search = entry.getValue();
 		jsonSearch.put(SEARCH_FIELD_JSON_ELEMENT, search.field);
 		jsonSearch.put(SEARCH_TERM_JSON_ELEMENT, search.searchTerm);
-		if (search.media != null)
-		    jsonSearch.put(SEARCH_MEDIA_JSON_ELEMENT, search.media);
-		if (search.sort != null)
-		    jsonSearch.put(SORT_ORDER_JSON_ELEMENT, search.sort);
-		if (search.reverseSort != null)
-		    jsonSearch.put(REVERSE_SORT_ORDER_JSON_ELEMENT, search.reverseSort);
+		jsonSearch.put(SEARCH_MEDIA_JSON_ELEMENT, search.media);
+		jsonSearch.put(SORT_ORDER_JSON_ELEMENT, search.sort);
+		jsonSearch.put(REVERSE_SORT_ORDER_JSON_ELEMENT, search.reverseSort);
 
 		jsonSearches.put(jsonSearch);
 	    }

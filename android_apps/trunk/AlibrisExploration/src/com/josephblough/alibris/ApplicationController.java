@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.josephblough.alibris.activities.ShoppingCartActivity;
 import com.josephblough.alibris.data.ItemSearchResult;
+import com.josephblough.alibris.data.SearchCriteria;
 import com.josephblough.alibris.util.ImageLoader;
 
 import android.app.Activity;
@@ -27,6 +28,7 @@ public class ApplicationController extends Application {
     
     public ImageLoader imageLoader;
     public List<ItemSearchResult> shoppingCart = new ArrayList<ItemSearchResult>();
+    public SearchCriteria searchCriteria = null;
 
     public void onCreate() {
 	super.onCreate();

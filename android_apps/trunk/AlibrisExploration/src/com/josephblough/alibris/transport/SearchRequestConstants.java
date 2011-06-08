@@ -94,6 +94,8 @@ public class SearchRequestConstants {
     public static final String SORT_PRICE = "p"; 
     public static final String SORT_DATE = "d";
     public static final String REVERSE_SORT = "r";
+
+    public static final String SORT_CONDITION = "c";
     
     public static final String SEARCH_TYPE_BOOKS = "B";
     public static final String SEARCH_TYPE_MUSIC = "M";

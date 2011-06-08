@@ -53,20 +53,12 @@ public class MainActivity extends ListActivity implements OnItemClickListener, O
     
     private static final String TAG = "MainActivity";
     
-    private static final int DEFAULT_SEARCH_FIELD = SearchCriteria.SEARCH_ALL_INDEX;
-    private static final int DEFAULT_SEARCH_MEDIA = SearchCriteria.SEARCH_MEDIA_BOOKS_INDEX;
-    private static final int DEFAULT_SEARCH_SORT = SearchCriteria.SORT_ORDER_RATING_INDEX;
-    
     private static final String JSON_RESULT_STRING_KEY = "json.results";
     
     private EditText searchTermField;
     private Button submitButton;
     private ProgressDialog progress;
     
-    private int currentSearchField = DEFAULT_SEARCH_FIELD;
-    private int currentSearchMediaType = DEFAULT_SEARCH_MEDIA;
-    private int currentSearchSortOrder = DEFAULT_SEARCH_SORT;
-    private boolean reverseSearchSort = false;
     private String lastSearchName;
     
     private String jsonResults = null;
@@ -234,7 +226,7 @@ public class MainActivity extends ListActivity implements OnItemClickListener, O
     }
     
     private void loadSearches() {
-	final String key = "Searches";
+        final String key = "Searches";
 	SharedPreferences prefs = getSharedPreferences(MainActivity.TAG, 0);
 	if (prefs.contains(key)) {
 		final SearchCriteriaCollection searches = new SearchCriteriaCollection(prefs.getString(key, null));
@@ -249,18 +241,14 @@ public class MainActivity extends ListActivity implements OnItemClickListener, O
 		builder.setSingleChoiceItems(searchNames, -1, new DialogInterface.OnClickListener() {
 		    public void onClick(DialogInterface dialog, int item) {
 			final String name = searchNames[item];
-			final SearchCriteria search = searches.getSearch(name);
-			Log.d(TAG, "Name: " + name + ", search_term: " + search.searchTerm + ", field: " + search.field + 
-				", media: " + search.media + ", sort: " + search.sort + ", reverse: " + search.reverseSort);
+		        final ApplicationController app = (ApplicationController) getApplication();
+			app.searchCriteria = searches.getSearch(name);
+			Log.d(TAG, "Name: " + name + ", search_term: " + app.searchCriteria.searchTerm + 
+				", field: " + app.searchCriteria.field + 
+				", media: " + app.searchCriteria.media + ", sort: " + 
+				app.searchCriteria.sort + ", reverse: " + app.searchCriteria.reverseSort);
 			
-			MainActivity.this.searchTermField.setText(search.searchTerm);
-			MainActivity.this.currentSearchField = search.field;
-			if (search.media != null)
-			    MainActivity.this.currentSearchMediaType = search.media;
-			if (search.sort != null)
-			    MainActivity.this.currentSearchSortOrder = search.sort;
-			if (search.reverseSort != null)
-			    MainActivity.this.reverseSearchSort = search.reverseSort;
+			MainActivity.this.searchTermField.setText(app.searchCriteria.searchTerm);
 			
 			lastSearchName = name;
 			
@@ -303,24 +291,23 @@ public class MainActivity extends ListActivity implements OnItemClickListener, O
 			SearchCriteriaCollection searches = (prefs.contains(key)) ? 
 				new SearchCriteriaCollection(prefs.getString(key, null)) : new SearchCriteriaCollection();
 
-			if (currentSearchMediaType == DEFAULT_SEARCH_MEDIA && currentSearchSortOrder == DEFAULT_SEARCH_SORT) {
-			    searches.addSearch(value, searchTermField.getText().toString(), currentSearchField);
+			final ApplicationController app = (ApplicationController) getApplication();
+			app.searchCriteria.searchTerm = searchTermField.getText().toString();
+			if (app.searchCriteria.media == SearchCriteria.DEFAULT_SEARCH_MEDIA && 
+				app.searchCriteria.sort == SearchCriteria.DEFAULT_SEARCH_SORT) {
+			    searches.addSearch(value, app.searchCriteria.searchTerm, app.searchCriteria.field);
 			}
 			else {
-			    if (reverseSearchSort) {
-				searches.addSearch(value, searchTermField.getText().toString(), currentSearchField, currentSearchMediaType, currentSearchSortOrder, true);
+			    if (app.searchCriteria.reverseSort) {
+				searches.addSearch(value, app.searchCriteria.searchTerm, app.searchCriteria.field, app.searchCriteria.media, app.searchCriteria.sort, true);
 			    }
 			    else {
-				searches.addSearch(value, searchTermField.getText().toString(), currentSearchField, currentSearchMediaType, currentSearchSortOrder);
+				searches.addSearch(value, app.searchCriteria.searchTerm, app.searchCriteria.field, app.searchCriteria.media, app.searchCriteria.sort);
 			    }
 			}
 			SharedPreferences.Editor editor = prefs.edit();
 			editor.putString(key, searches.toJson());
 			editor.commit();
-
-			Log.d(TAG, "Name: " + value + ", search_term: " + searchTermField.getText().toString() + 
-				", field: " + currentSearchField + ", media: " + currentSearchMediaType + 
-				", sort: " + currentSearchSortOrder + ", reverse: " + reverseSearchSort);
 		    }
 		}
 	    });
@@ -348,26 +335,22 @@ public class MainActivity extends ListActivity implements OnItemClickListener, O
 	final Spinner searchSortSpinner = (Spinner)view.findViewById(R.id.search_sort);
 	final CheckBox reverseSort = (CheckBox)view.findViewById(R.id.search_reverse_sort);
 	
-	searchFieldSpinner.setSelection(this.currentSearchField);
-	searchMediaSpinner.setSelection(this.currentSearchMediaType);
-	searchSortSpinner.setSelection(this.currentSearchSortOrder);
-	reverseSort.setChecked(this.reverseSearchSort);
+	final ApplicationController app = (ApplicationController) getApplication();
+	searchFieldSpinner.setSelection(app.searchCriteria.field);
+	searchMediaSpinner.setSelection(app.searchCriteria.media);
+	searchSortSpinner.setSelection(app.searchCriteria.sort);
+	reverseSort.setChecked(app.searchCriteria.reverseSort);
 	
 	builder.setView(view);
 
 	builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 
 	    public void onClick(DialogInterface dialog, int which) {
-		MainActivity.this.currentSearchField = searchFieldSpinner.getSelectedItemPosition();
-		MainActivity.this.currentSearchMediaType = searchMediaSpinner.getSelectedItemPosition();
-		MainActivity.this.currentSearchSortOrder = searchSortSpinner.getSelectedItemPosition();
-		MainActivity.this.reverseSearchSort = reverseSort.isChecked();
+		app.searchCriteria.field= searchFieldSpinner.getSelectedItemPosition();
+		app.searchCriteria.media = searchMediaSpinner.getSelectedItemPosition();
+		app.searchCriteria.sort = searchSortSpinner.getSelectedItemPosition();
+		app.searchCriteria.reverseSort = reverseSort.isChecked();
 
-		Log.d(TAG, "field: " + MainActivity.this.currentSearchField + 
-			", media: " + MainActivity.this.currentSearchMediaType + 
-			", sort: " + MainActivity.this.currentSearchSortOrder + 
-			", reverse: " + MainActivity.this.reverseSearchSort);
-		
 		performSearch();
 	    }
 	});
@@ -384,11 +367,13 @@ public class MainActivity extends ListActivity implements OnItemClickListener, O
     }
     
     private Map<String, String> populateParameterMap() {
+	final ApplicationController app = (ApplicationController) getApplication();
+
 	Map<String, String> params = new HashMap<String, String>();
 	
 	// Search field
 	String searchField = SearchRequestConstants.WORKS_SEARCH_FIELDS_ALL;
-	switch (currentSearchField) {
+	switch (app.searchCriteria.field) {
 	case SearchCriteria.SEARCH_AUTHOR_INDEX:
 	    searchField = SearchRequestConstants.WORKS_SEARCH_FIELD_AUTHOR;
 	    break;
@@ -402,9 +387,9 @@ public class MainActivity extends ListActivity implements OnItemClickListener, O
 	params.put(searchField, searchTermField.getText().toString());
 	
 	// Media type
-	if (currentSearchMediaType != DEFAULT_SEARCH_MEDIA) {
+	if (app.searchCriteria.media != SearchCriteria.DEFAULT_SEARCH_MEDIA) {
 	    String mediaType = SearchRequestConstants.SEARCH_TYPE_BOOKS;
-	    switch (currentSearchMediaType) {
+	    switch (app.searchCriteria.media) {
 	    case SearchCriteria.SEARCH_MEDIA_ALL_INDEX:
 		mediaType = SearchRequestConstants.SEARCH_TYPE_ALL;
 		break;
@@ -419,27 +404,27 @@ public class MainActivity extends ListActivity implements OnItemClickListener, O
 	}
 	
 	// Sort order
-	if (reverseSearchSort || currentSearchSortOrder != DEFAULT_SEARCH_SORT) {
+	if (app.searchCriteria.reverseSort || app.searchCriteria.sort != SearchCriteria.DEFAULT_SEARCH_SORT) {
 	    String sort = SearchRequestConstants.SORT_RATING;
-	    switch (currentSearchSortOrder) {
+	    switch (app.searchCriteria.sort) {
 	    case SearchCriteria.SORT_ORDER_RATING_INDEX:
 		sort = SearchRequestConstants.SORT_RATING;
 		break;
 	    case SearchCriteria.SORT_ORDER_TITLE_INDEX:
-		sort = (reverseSearchSort) ? (SearchRequestConstants.SORT_TITLE + "r") : 
-		    SearchRequestConstants.SORT_RATING;
+		sort = (app.searchCriteria.reverseSort) ? (SearchRequestConstants.SORT_TITLE + "r") : 
+		    SearchRequestConstants.SORT_TITLE;
 		break;
 	    case SearchCriteria.SORT_ORDER_AUTHOR_INDEX:
-		sort = (reverseSearchSort) ? (SearchRequestConstants.SORT_AUTHOR + "r") : 
-		    SearchRequestConstants.SORT_RATING;
+		sort = (app.searchCriteria.reverseSort) ? (SearchRequestConstants.SORT_AUTHOR + "r") : 
+		    SearchRequestConstants.SORT_AUTHOR;
 		break;
 	    case SearchCriteria.SORT_ORDER_PRICE_INDEX:
-		sort = (reverseSearchSort) ? (SearchRequestConstants.SORT_PRICE + "r") : 
-		    SearchRequestConstants.SORT_RATING;
+		sort = (app.searchCriteria.reverseSort) ? (SearchRequestConstants.SORT_PRICE + "r") : 
+		    SearchRequestConstants.SORT_PRICE;
 		break;
 	    case SearchCriteria.SORT_ORDER_DATE_INDEX:
-		sort = (reverseSearchSort) ? (SearchRequestConstants.SORT_DATE + "r") : 
-		    SearchRequestConstants.SORT_RATING;
+		sort = (app.searchCriteria.reverseSort) ? (SearchRequestConstants.SORT_DATE + "r") : 
+		    SearchRequestConstants.SORT_DATE;
 		break;
 	    }
 	    params.put(SearchRequestConstants.SEARCH_SORT, sort);

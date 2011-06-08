@@ -2,7 +2,9 @@ package com.josephblough.alibris.activities;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -15,6 +17,7 @@ import com.josephblough.alibris.R;
 import com.josephblough.alibris.adapters.WorkOfferAdapter;
 import com.josephblough.alibris.data.ItemSearchResult;
 import com.josephblough.alibris.data.OfferFilterCriteria;
+import com.josephblough.alibris.data.OfferFilterCriteriaCollection;
 import com.josephblough.alibris.tasks.DataReceiver;
 import com.josephblough.alibris.tasks.SearchResultsRetrieverTask;
 import com.josephblough.alibris.transport.SearchRequestConstants;
@@ -24,6 +27,7 @@ import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -47,12 +51,13 @@ public class WorkOffersActivity extends ListActivity implements DataReceiver, On
     private ProgressDialog progress;
 
     NumberFormat formatter;// = NumberFormat.getCurrencyInstance();
-    OfferFilterCriteria filter = new OfferFilterCriteria();
     
     private static final String JSON_RESULT_STRING_KEY = "json.results";
     private String jsonResults = null;
 
     private int workId;
+    
+    private String lastFilterName;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -106,8 +111,8 @@ public class WorkOffersActivity extends ListActivity implements DataReceiver, On
 	
 	try {
 	    jsonResults = data.toString();
-	    JSONArray works = data.getJSONArray("book");
-	    int length = works.length();
+	    JSONArray works = data.optJSONArray("book");
+	    int length = (works == null) ? 0 : works.length();
 	    Log.d(TAG, "Retrieved " + length + " offers");
 	    List<ItemSearchResult> results = new ArrayList<ItemSearchResult>();
 	    for (int i=0; i<length; i++) {
@@ -154,8 +159,15 @@ public class WorkOffersActivity extends ListActivity implements DataReceiver, On
 	case R.id.filter_offers_menu_item:
 	    displayFilterOptions();
 	    return true;
-	case R.id.offer_options_menu_item:
-	    displaySortOptions();
+	case R.id.reset_filter_menu_item:
+	    ((ApplicationController)getApplication()).currentFilter = new OfferFilterCriteria();
+	    retrieveOffers();
+	    return true;
+	case R.id.load_filter_menu_item:
+	    loadFilters();
+	    return true;
+	case R.id.save_filter_menu_item:
+	    saveFilter();
 	    return true;
 	}
 	
@@ -177,15 +189,16 @@ public class WorkOffersActivity extends ListActivity implements DataReceiver, On
 	final Spinner sortOrderField = (Spinner)view.findViewById(R.id.work_offers_filter_sort);
 	final CheckBox reverseSortOrderField = (CheckBox)view.findViewById(R.id.work_offers_filter_reverse_sort);
 	
-	if (filter.minPrice != null)
-	    minPriceField.setText(formatter.format(filter.minPrice));
-	if (filter.maxPrice != null)
-	    maxPriceField.setText(formatter.format(filter.maxPrice));
-	minConditionField.setSelection(filter.minCondition);
-	maxConditionField.setSelection(filter.maxCondition);
-	minSellerRatingField.setSelection(filter.minSellerRating);
-	sortOrderField.setSelection(filter.sort);
-	reverseSortOrderField.setChecked(filter.reverseSort);
+	final ApplicationController app = (ApplicationController)getApplication();
+	if (app.currentFilter.minPrice != null)
+	    minPriceField.setText(formatter.format(app.currentFilter.minPrice));
+	if (app.currentFilter.maxPrice != null)
+	    maxPriceField.setText(formatter.format(app.currentFilter.maxPrice));
+	minConditionField.setSelection(app.currentFilter.minCondition);
+	maxConditionField.setSelection(app.currentFilter.maxCondition);
+	minSellerRatingField.setSelection(app.currentFilter.minSellerRating);
+	sortOrderField.setSelection(app.currentFilter.sort);
+	reverseSortOrderField.setChecked(app.currentFilter.reverseSort);
 	
 	builder.setView(view);
 
@@ -193,20 +206,20 @@ public class WorkOffersActivity extends ListActivity implements DataReceiver, On
 
 	    public void onClick(DialogInterface dialog, int which) {
 		if (!"".equals(minPriceField.getText().toString()))
-		    filter.minPrice = Double.valueOf(minPriceField.getText().toString());
+		    app.currentFilter.minPrice = Double.valueOf(minPriceField.getText().toString());
 		else
-		    filter.minPrice = null;
+		    app.currentFilter.minPrice = null;
 		
 		if (!"".equals(maxPriceField.getText().toString()))
-		    filter.maxPrice = Double.valueOf(maxPriceField.getText().toString());
+		    app.currentFilter.maxPrice = Double.valueOf(maxPriceField.getText().toString());
 		else
-		    filter.maxPrice = null;
+		    app.currentFilter.maxPrice = null;
 		
-		filter.minCondition = minConditionField.getSelectedItemPosition();
-		filter.maxCondition = maxConditionField.getSelectedItemPosition();
-		filter.minSellerRating = minSellerRatingField.getSelectedItemPosition();
-		filter.sort = sortOrderField.getSelectedItemPosition();
-		filter.reverseSort = reverseSortOrderField.isChecked();
+		app.currentFilter.minCondition = minConditionField.getSelectedItemPosition();
+		app.currentFilter.maxCondition = maxConditionField.getSelectedItemPosition();
+		app.currentFilter.minSellerRating = minSellerRatingField.getSelectedItemPosition();
+		app.currentFilter.sort = sortOrderField.getSelectedItemPosition();
+		app.currentFilter.reverseSort = reverseSortOrderField.isChecked();
 		
 		retrieveOffers();
 	    }
@@ -223,10 +236,6 @@ public class WorkOffersActivity extends ListActivity implements DataReceiver, On
 	builder.show();
     }
     
-    private void displaySortOptions() {
-	// Same order by as works, but also added "c" for condition
-    }
-
     public void onClick(View v) {
 	ItemSearchResult offer = (ItemSearchResult)v.getTag();
 	ApplicationController app = (ApplicationController)getApplication();
@@ -239,30 +248,32 @@ public class WorkOffersActivity extends ListActivity implements DataReceiver, On
     
     
     private Map<String, String> populateParameterMap() {
+	final ApplicationController app = (ApplicationController)getApplication();
+
 	Map<String, String> params = new HashMap<String, String>();
 	
 	// Word item field
         params.put(SearchRequestConstants.ITEMS_SEARCH_FIELD_WORK_ID, Integer.toString(workId));
 	
 	// Minimum price
-        if (filter.minPrice != null) {
-            params.put(SearchRequestConstants.ITEMS_SEARCH_FIELD_PRICE_MIN, Double.toString(filter.minPrice));
+        if (app.currentFilter.minPrice != null) {
+            params.put(SearchRequestConstants.ITEMS_SEARCH_FIELD_PRICE_MIN, Double.toString(app.currentFilter.minPrice));
         }
         
         // Maximum price
-        if (filter.maxPrice != null) {
-            params.put(SearchRequestConstants.ITEMS_SEARCH_FIELD_PRICE_MAX, Double.toString(filter.maxPrice));
+        if (app.currentFilter.maxPrice != null) {
+            params.put(SearchRequestConstants.ITEMS_SEARCH_FIELD_PRICE_MAX, Double.toString(app.currentFilter.maxPrice));
         }
 	
         // Minimum seller rating
-        if (filter.minSellerRating != OfferFilterCriteria.FILTER_SELLER_RATING_ANY) {
+        if (app.currentFilter.minSellerRating != OfferFilterCriteria.FILTER_SELLER_RATING_ANY) {
             
         }
 	
 	// Sort order
-	if (filter.reverseSort || filter.sort != OfferFilterCriteria.SORT_ORDER_RATING) {
+	if (app.currentFilter.reverseSort || app.currentFilter.sort != OfferFilterCriteria.SORT_ORDER_RATING) {
 	    String sort = SearchRequestConstants.SORT_RATING;
-	    switch (filter.sort) {
+	    switch (app.currentFilter.sort) {
 	    case OfferFilterCriteria.SORT_ORDER_RATING:
 		sort = SearchRequestConstants.SORT_RATING;
 		break;
@@ -270,19 +281,19 @@ public class WorkOffersActivity extends ListActivity implements DataReceiver, On
 		sort = SearchRequestConstants.SORT_CONDITION;
 		break;
 	    case OfferFilterCriteria.SORT_ORDER_TITLE:
-		sort = (filter.reverseSort) ? (SearchRequestConstants.SORT_TITLE + "r") : 
+		sort = (app.currentFilter.reverseSort) ? (SearchRequestConstants.SORT_TITLE + "r") : 
 		    SearchRequestConstants.SORT_TITLE;
 		break;
 	    case OfferFilterCriteria.SORT_ORDER_AUTHOR:
-		sort = (filter.reverseSort) ? (SearchRequestConstants.SORT_AUTHOR + "r") : 
+		sort = (app.currentFilter.reverseSort) ? (SearchRequestConstants.SORT_AUTHOR + "r") : 
 		    SearchRequestConstants.SORT_AUTHOR;
 		break;
 	    case OfferFilterCriteria.SORT_ORDER_PRICE:
-		sort = (filter.reverseSort) ? (SearchRequestConstants.SORT_PRICE + "r") : 
+		sort = (app.currentFilter.reverseSort) ? (SearchRequestConstants.SORT_PRICE + "r") : 
 		    SearchRequestConstants.SORT_PRICE;
 		break;
 	    case OfferFilterCriteria.SORT_ORDER_DATE:
-		sort = (filter.reverseSort) ? (SearchRequestConstants.SORT_DATE + "r") : 
+		sort = (app.currentFilter.reverseSort) ? (SearchRequestConstants.SORT_DATE + "r") : 
 		    SearchRequestConstants.SORT_DATE;
 		break;
 	    }
@@ -298,5 +309,84 @@ public class WorkOffersActivity extends ListActivity implements DataReceiver, On
 
         if (jsonResults != null)
             outState.putString(JSON_RESULT_STRING_KEY, jsonResults);
+    }
+
+    private void loadFilters() {
+        final String key = "Filters";
+	SharedPreferences prefs = getSharedPreferences(WorkOffersActivity.TAG, 0);
+	if (prefs.contains(key)) {
+		final OfferFilterCriteriaCollection filters = new OfferFilterCriteriaCollection(prefs.getString(key, null));
+		Collection<String> filterCollection = filters.getSearchNames();
+		final String[] searchNames = new String[filterCollection.size()];
+		Iterator<String> it = filterCollection.iterator();
+		for (int i=0; i<filterCollection.size(); i++) {
+		    searchNames[i] = it.next();
+		}
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setTitle("Load Saved Filter");
+		builder.setSingleChoiceItems(searchNames, -1, new DialogInterface.OnClickListener() {
+		    public void onClick(DialogInterface dialog, int item) {
+			final String name = searchNames[item];
+		        final ApplicationController app = (ApplicationController) getApplication();
+			app.currentFilter = filters.getFilter(name);
+			Log.d(TAG, "Name: " + name + ", search_term: " + app.searchCriteria.searchTerm + 
+				", field: " + app.searchCriteria.field + 
+				", media: " + app.searchCriteria.media + ", sort: " + 
+				app.searchCriteria.sort + ", reverse: " + app.searchCriteria.reverseSort);
+			
+			lastFilterName = name;
+			
+			dialog.dismiss();
+			
+			retrieveOffers();
+		    }
+		});
+		builder.show();
+	}
+	else {
+	    Toast.makeText(this, "No filters have been saved", Toast.LENGTH_LONG).show();
+	}
+    }
+    
+    private void saveFilter() {
+	    // see http://androidsnippets.com/prompt-user-input-with-an-alertdialog
+	    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+	    builder.setTitle("Save Filter");
+
+	    // Set an EditText view to get user input 
+	    final EditText input = new EditText(this);
+	    if (lastFilterName != null)
+		input.setText(lastFilterName);
+	    builder.setView(input);
+
+	    builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+		public void onClick(DialogInterface dialog, int whichButton) {
+		    String value = input.getText().toString();
+		    if (!"".equals(value)) {
+
+			lastFilterName = value;
+			
+			final String key = "Filters";
+			SharedPreferences prefs = getSharedPreferences(WorkOffersActivity.TAG, 0);
+			OfferFilterCriteriaCollection filters = (prefs.contains(key)) ? 
+				new OfferFilterCriteriaCollection(prefs.getString(key, null)) : new OfferFilterCriteriaCollection();
+
+			final ApplicationController app = (ApplicationController) getApplication();
+			filters.addFilter(value, app.currentFilter);
+			SharedPreferences.Editor editor = prefs.edit();
+			editor.putString(key, filters.toJson());
+			editor.commit();
+		    }
+		}
+	    });
+
+	    builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+		public void onClick(DialogInterface dialog, int whichButton) {
+		    // Canceled.
+		    dialog.cancel();
+		}
+	    });
+
+	    builder.show();
     }
 }

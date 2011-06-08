@@ -217,9 +217,6 @@ public class MainActivity extends ListActivity implements OnItemClickListener, O
 	case R.id.refresh_menu_item:
 	    performSearch();
 	    return true;
-	case R.id.exit_menu_item:
-	    finish();
-	    return true;
 	}
 	
 	return super.onOptionsItemSelected(item);

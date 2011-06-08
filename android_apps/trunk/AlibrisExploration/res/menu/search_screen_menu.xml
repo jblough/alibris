@@ -17,9 +17,5 @@
   <item android:id="@+id/refresh_menu_item"
     android:title="Refresh"
     android:icon="@drawable/ic_menu_refresh" />
-    
-  <item android:id="@+id/exit_menu_item"
-    android:title="Exit"
-    android:icon="@drawable/ic_menu_home" />
 
 </menu>

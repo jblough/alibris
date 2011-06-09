@@ -19,10 +19,26 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_marginRight="50dip" />
+
+    <TextView android:id="@+id/item_offer_details_title_label"
+        android:text="Title"
+        android:layout_toRightOf="@id/item_offer_details_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        style="@style/WorkItemLabel" />
+      
+    <TextView android:id="@+id/item_offer_details_author_label"
+        android:text="by author"
+        android:layout_toRightOf="@id/item_offer_details_image"
+        android:layout_below="@id/item_offer_details_title_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
       
     <TextView android:id="@+id/item_offer_details_price_label"
         android:text="Price:"
         android:layout_toRightOf="@id/item_offer_details_image"
+        android:layout_below="@id/item_offer_details_author_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         style="@style/WorkItemLabel" />
@@ -36,59 +52,40 @@
 
   </RelativeLayout>
     
-  <TextView
-    android:text="Title"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    style="@style/WorkItemLabel" />
-    
-  <TextView android:id="@+id/item_offer_details_title"
-    android:text=""
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content" />
-    
-  <TextView
-    android:text="Author"
+  <TextView android:id="@+id/item_offer_comments_label"
+    android:text="Comments"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     style="@style/WorkItemLabel" />
 
-  <TextView android:id="@+id/item_offer_details_author"
+  <TextView android:id="@+id/item_offer_comments"
     android:text=""
     android:layout_width="fill_parent"
     android:layout_height="wrap_content" />
     
-  <TextView
-    android:text="Synopsis"
+  <TextView android:id="@+id/item_offer_notes_label"
+    android:text="Notes"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     style="@style/WorkItemLabel" />
 
-  <TextView android:id="@+id/item_offer_details_synopsis"
+  <TextView android:id="@+id/item_offer_notes"
     android:text=""
     android:layout_width="fill_parent"
     android:layout_height="wrap_content" />
     
-  <TextView
-    android:text="Reviews"
+  <TextView android:id="@+id/item_offer_seller_rating_label"
+    android:text="Seller Reliability Rating:"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     style="@style/WorkItemLabel" />
 
-    <TextView android:id="@+id/item_offer_details_overall_rating_label"
-        android:visibility="gone"
-        android:text="Overall Rating:"
-        android:layout_gravity="left"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-      
-    <RatingBar android:id="@+id/item_offer_details_overall_rating"
-        android:visibility="gone"
-        android:numStars="5"
+    <RatingBar android:id="@+id/item_offer_seller_rating"
+        android:numStars="6"
         android:isIndicator="true"
         android:stepSize="0.1"
         android:layout_gravity="right"
-        style="?android:attr/ratingBarStyleIndicator"
+        style="?android:attr/ratingBarStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
   

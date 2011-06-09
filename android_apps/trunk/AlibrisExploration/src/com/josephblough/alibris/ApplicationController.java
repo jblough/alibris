@@ -29,7 +29,7 @@ public class ApplicationController extends Application {
     
     public ImageLoader imageLoader;
     public List<ItemSearchResult> shoppingCart = new ArrayList<ItemSearchResult>();
-    public SearchCriteria searchCriteria = null;
+    public SearchCriteria searchCriteria = new SearchCriteria("", SearchCriteria.SEARCH_ALL_INDEX);
     public OfferFilterCriteria currentFilter = new OfferFilterCriteria();
 
     public void onCreate() {

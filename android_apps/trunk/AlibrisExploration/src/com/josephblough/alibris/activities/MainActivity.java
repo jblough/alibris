@@ -3,9 +3,11 @@ package com.josephblough.alibris.activities;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -211,11 +213,17 @@ public class MainActivity extends ListActivity implements OnItemClickListener, O
 	case R.id.save_search_menu_item:
 	    saveSearch();
 	    return true;
+	case R.id.delete_search_menu_item:
+	    deleteSearches();
+	    return true;
 	case R.id.change_search_field_menu_item:
 	    changeSearchCriteria();
 	    return true;
 	case R.id.refresh_menu_item:
 	    performSearch();
+	    return true;
+	case R.id.search_menu_item:
+	    showSearchFields();
 	    return true;
 	}
 	
@@ -223,11 +231,12 @@ public class MainActivity extends ListActivity implements OnItemClickListener, O
     }
     
     private void loadSearches() {
-        final String key = "Searches";
+	final String key = "Searches";
 	SharedPreferences prefs = getSharedPreferences(MainActivity.TAG, 0);
 	if (prefs.contains(key)) {
-		final SearchCriteriaCollection searches = new SearchCriteriaCollection(prefs.getString(key, null));
-		Collection<String> searchCollection = searches.getSearchNames();
+	    final SearchCriteriaCollection searches = new SearchCriteriaCollection(prefs.getString(key, null));
+	    Collection<String> searchCollection = searches.getSearchNames();
+	    if (searchCollection.size() > 0) {
 		final String[] searchNames = new String[searchCollection.size()];
 		Iterator<String> it = searchCollection.iterator();
 		for (int i=0; i<searchCollection.size(); i++) {
@@ -238,25 +247,25 @@ public class MainActivity extends ListActivity implements OnItemClickListener, O
 		builder.setSingleChoiceItems(searchNames, -1, new DialogInterface.OnClickListener() {
 		    public void onClick(DialogInterface dialog, int item) {
 			final String name = searchNames[item];
-		        final ApplicationController app = (ApplicationController) getApplication();
+			final ApplicationController app = (ApplicationController) getApplication();
 			app.searchCriteria = searches.getSearch(name);
-			Log.d(TAG, "Name: " + name + ", search_term: " + app.searchCriteria.searchTerm + 
-				", field: " + app.searchCriteria.field + 
-				", media: " + app.searchCriteria.media + ", sort: " + 
-				app.searchCriteria.sort + ", reverse: " + app.searchCriteria.reverseSort);
-			
+
 			MainActivity.this.searchTermField.setText(app.searchCriteria.searchTerm);
-			
+
 			lastSearchName = name;
-			
+
 			dialog.dismiss();
-			
+
 			if (!"".equals(searchTermField.getText().toString())) {
 			    performSearch();
 			}
 		    }
 		});
 		builder.show();
+	    }
+	    else {
+		Toast.makeText(this, "No searches have been saved", Toast.LENGTH_LONG).show();
+	    }
 	}
 	else {
 	    Toast.makeText(this, "No searches have been saved", Toast.LENGTH_LONG).show();
@@ -320,6 +329,66 @@ public class MainActivity extends ListActivity implements OnItemClickListener, O
 	}
 	else {
 	    Toast.makeText(this, "No search terms to save", Toast.LENGTH_LONG).show();
+	}
+    }
+    
+    private void deleteSearches() {
+	final String key = "Searches";
+	final SharedPreferences prefs = getSharedPreferences(MainActivity.TAG, 0);
+	if (prefs.contains(key)) {
+	    final SearchCriteriaCollection searches = new SearchCriteriaCollection(prefs.getString(key, null));
+	    Collection<String> searchCollection = searches.getSearchNames();
+	    if (searchCollection.size() > 0) {
+		final String[] searchNames = new String[searchCollection.size()];
+		Iterator<String> it = searchCollection.iterator();
+		for (int i=0; i<searchCollection.size(); i++) {
+		    searchNames[i] = it.next();
+		}
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setTitle("Delete Saved Searches");
+		final Set<String> searchesToRemove = new HashSet<String>();
+		builder.setMultiChoiceItems(searchNames, null, new DialogInterface.OnMultiChoiceClickListener() {
+
+		    public void onClick(DialogInterface dialog, int which, boolean isChecked) {
+			String name = searchNames[which];
+			if (isChecked)
+			    searchesToRemove.add(name);
+			else
+			    searchesToRemove.remove(name);
+		    }
+		});
+
+		builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+		    public void onClick(DialogInterface dialog, int whichButton) {
+			// Remove the searches
+			for (String name : searchesToRemove) {
+			    searches.removeSearch(name);
+			}
+
+			// Commit the changes
+			SharedPreferences.Editor editor = prefs.edit();
+			editor.putString(key, searches.toJson());
+			editor.commit();
+
+			dialog.dismiss();
+		    }
+		});
+
+		builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+		    public void onClick(DialogInterface dialog, int whichButton) {
+			// Canceled.
+			dialog.cancel();
+		    }
+		});
+
+		builder.show();
+	    }
+	    else {
+		Toast.makeText(this, "No searches have been saved", Toast.LENGTH_LONG).show();
+	    }
+	}
+	else {
+	    Toast.makeText(this, "No searches have been saved", Toast.LENGTH_LONG).show();
 	}
     }
     

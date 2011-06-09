@@ -35,11 +35,11 @@ public class OfferFilterCriteriaCollection {
 	
 	try {
 	    JSONObject json = new JSONObject(jsonString);
-	    JSONArray jsonSearches = json.optJSONArray(FILTERS_JSON_ARRAY);
-	    if (jsonSearches != null) {
-		int length = jsonSearches.length();
+	    JSONArray jsonFilters = json.optJSONArray(FILTERS_JSON_ARRAY);
+	    if (jsonFilters != null) {
+		int length = jsonFilters.length();
 		for (int i=0; i<length; i++) {
-		    JSONObject jsonFilter = jsonSearches.getJSONObject(i);
+		    JSONObject jsonFilter = jsonFilters.getJSONObject(i);
 		    String name = jsonFilter.getString(NAME_JSON_ELEMENT);
 		    OfferFilterCriteria filter = new OfferFilterCriteria();
 		    if (jsonFilter.has(MIN_PRICE_JSON_ELEMENT))
@@ -69,7 +69,7 @@ public class OfferFilterCriteriaCollection {
 	}
     }
 
-    public Collection<String> getSearchNames() {
+    public Collection<String> getFilterNames() {
 	return filters.keySet();
     }
     
@@ -102,7 +102,7 @@ public class OfferFilterCriteriaCollection {
     public String toJson() {
 	JSONObject json = new JSONObject();
 	try {
-	    JSONArray jsonSearches = new JSONArray();
+	    JSONArray jsonFilters = new JSONArray();
 	    for (Entry<String, OfferFilterCriteria> entry : filters.entrySet()) {
 		JSONObject jsonFilter = new JSONObject();
 		jsonFilter.put(NAME_JSON_ELEMENT, entry.getKey());
@@ -124,9 +124,9 @@ public class OfferFilterCriteriaCollection {
 		jsonFilter.put(SORT_ORDER_JSON_ELEMENT, filter.sort);
 		jsonFilter.put(REVERSE_SORT_ORDER_JSON_ELEMENT, filter.reverseSort);
 
-		jsonSearches.put(jsonFilter);
+		jsonFilters.put(jsonFilter);
 	    }
-	    json.put(FILTERS_JSON_ARRAY, jsonSearches);
+	    json.put(FILTERS_JSON_ARRAY, jsonFilters);
 	}
 	catch (JSONException e) {
 	    Log.e(TAG, e.getMessage(), e);

@@ -120,8 +120,6 @@ public class ItemSearchResult extends SearchResult {
 	    return true;
 	if (obj == null)
 	    return false;
-	if (getClass() != obj.getClass())
-	    return false;
 	ItemSearchResult other = (ItemSearchResult) obj;
 	if (binding == null) {
 	    if (other.binding != null)

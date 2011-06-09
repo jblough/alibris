@@ -10,16 +10,20 @@
     android:title="Save Filter"
     android:icon="@drawable/ic_menu_save" />
     
+  <item android:id="@+id/delete_filter_menu_item"
+    android:title="Delete Filters"
+    android:icon="@drawable/ic_menu_delete" />
+
+  <item android:id="@+id/reset_filter_menu_item"
+    android:title="Reset Filter"
+    android:icon="@drawable/ic_menu_search" />
+    
   <item android:id="@+id/filter_offers_menu_item"
     android:title="Filter"
-    android:icon="@drawable/ic_menu_search" />
+    android:icon="@drawable/ic_menu_preferences" />
 
   <item android:id="@+id/refresh_offers_menu_item"
     android:title="Refresh"
     android:icon="@drawable/ic_menu_refresh" />
-
-  <item android:id="@+id/reset_filter_menu_item"
-    android:title="Reset Filter"
-    android:icon="@drawable/ic_menu_preferences" />
 
 </menu>

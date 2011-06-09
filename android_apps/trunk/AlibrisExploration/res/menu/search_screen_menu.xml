@@ -10,6 +10,10 @@
     android:title="Save Search"
     android:icon="@drawable/ic_menu_save" />
     
+  <item android:id="@+id/delete_search_menu_item"
+    android:title="Delete Searches"
+    android:icon="@drawable/ic_menu_delete" />
+    
   <item android:id="@+id/change_search_field_menu_item"
     android:title="Search Options"
     android:icon="@drawable/ic_menu_preferences" />
@@ -17,5 +21,9 @@
   <item android:id="@+id/refresh_menu_item"
     android:title="Refresh"
     android:icon="@drawable/ic_menu_refresh" />
+    
+  <item android:id="@+id/search_menu_item"
+    android:title="Search"
+    android:icon="@drawable/ic_menu_search" />
 
 </menu>

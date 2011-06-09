@@ -9,6 +9,8 @@
   android:layout_width="fill_parent"
   android:layout_height="fill_parent">
   
+  <include layout="@layout/alibris_header" />
+     
   <RelativeLayout android:layout_width="fill_parent"
     android:layout_height="wrap_content">
     
@@ -50,7 +52,71 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
+    <Button android:id="@+id/toggle_cart_button"
+        android:text="Add to cart"
+        android:layout_toRightOf="@id/item_offer_details_price_label"
+        android:layout_below="@id/item_offer_details_author_label"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+        
   </RelativeLayout>
+    
+  <TextView android:id="@+id/item_offer_publisher_label"
+    android:text="Publisher"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    style="@style/WorkItemLabel" />
+
+  <TextView android:id="@+id/item_offer_publisher"
+    android:text=""
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content" />
+    
+  <TextView android:id="@+id/item_offer_publication_date_label"
+    android:text="Date Published"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    style="@style/WorkItemLabel" />
+
+  <TextView android:id="@+id/item_offer_publication_date"
+    android:text=""
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content" />
+    
+  <TextView android:id="@+id/item_offer_publication_place_label"
+    android:text="Location Published"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    style="@style/WorkItemLabel" />
+
+  <TextView android:id="@+id/item_offer_publication_place"
+    android:text=""
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content" />
+    
+  <TextView android:id="@+id/item_offer_isbn_label"
+    android:text="ISBN"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    style="@style/WorkItemLabel" />
+
+  <TextView android:id="@+id/item_offer_isbn"
+    android:text=""
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content" />
+    
+  <TextView android:id="@+id/item_offer_condition_label"
+    android:text="Condition"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    style="@style/WorkItemLabel" />
+
+  <TextView android:id="@+id/item_offer_condition"
+    android:text=""
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content" />
     
   <TextView android:id="@+id/item_offer_comments_label"
     android:text="Comments"
@@ -80,14 +146,14 @@
     android:layout_height="wrap_content"
     style="@style/WorkItemLabel" />
 
-    <RatingBar android:id="@+id/item_offer_seller_rating"
-        android:numStars="6"
-        android:isIndicator="true"
-        android:stepSize="0.1"
-        android:layout_gravity="right"
-        style="?android:attr/ratingBarStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+  <RatingBar android:id="@+id/item_offer_seller_rating"
+    android:numStars="6"
+    android:isIndicator="true"
+    android:stepSize="0.1"
+    android:layout_gravity="right"
+    style="?android:attr/ratingBarStyleSmall"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content" />
   
 </LinearLayout>
 </ScrollView>    

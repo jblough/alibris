@@ -64,6 +64,8 @@ public class MainActivity extends ListActivity implements OnItemClickListener, O
     
     private String jsonResults = null;
     
+    private boolean displayedMessage = false;
+    
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -105,23 +107,34 @@ public class MainActivity extends ListActivity implements OnItemClickListener, O
 	
 	searchTermField.setVisibility(View.GONE);
 	submitButton.setVisibility(View.GONE);
+	
+	if (!displayedMessage) {
+	    Toast.makeText(this, "Use the search button or search menu item to redisplay the search field", Toast.LENGTH_LONG).show();
+	    displayedMessage = true;
+	}
     }
     
     private void showSearchFields() {
 	searchTermField.setVisibility(View.VISIBLE);
 	submitButton.setVisibility(View.VISIBLE);
     }
-    
+
     @SuppressWarnings("unchecked")
     private void performSearch() {
-	
-	progress = ProgressDialog.show(this, "", "Searching");
-	
-	Map<String, String> params = populateParameterMap();
-	SearchResultsRetrieverTask retriever = new SearchResultsRetrieverTask(MainActivity.this);
-	retriever.execute(params);
 
-	hideSearchFields();
+	if (!"".equals(searchTermField.getText().toString())) {
+
+	    progress = ProgressDialog.show(this, "", "Searching");
+
+	    Map<String, String> params = populateParameterMap();
+	    SearchResultsRetrieverTask retriever = new SearchResultsRetrieverTask(MainActivity.this);
+	    retriever.execute(params);
+
+	    hideSearchFields();
+	}
+	else {
+	    Toast.makeText(this, "No search terms entered", Toast.LENGTH_LONG).show();
+	}
     }
     
     public void error(String error) {
@@ -255,9 +268,8 @@ public class MainActivity extends ListActivity implements OnItemClickListener, O
 
 			dialog.dismiss();
 
-			if (!"".equals(searchTermField.getText().toString())) {
+			if (!"".equals(searchTermField.getText().toString()))
 			    performSearch();
-			}
 		    }
 		});
 
@@ -424,7 +436,8 @@ public class MainActivity extends ListActivity implements OnItemClickListener, O
 		app.searchCriteria.sort = searchSortSpinner.getSelectedItemPosition();
 		app.searchCriteria.reverseSort = reverseSort.isChecked();
 
-		performSearch();
+		if (!"".equals(searchTermField.getText().toString()))
+		    performSearch();
 	    }
 	});
 
@@ -434,7 +447,6 @@ public class MainActivity extends ListActivity implements OnItemClickListener, O
 		dialog.cancel();
 	    }
 	});
-
 
 	builder.show();
     }

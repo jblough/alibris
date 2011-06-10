@@ -22,6 +22,7 @@
         android:layout_alignParentLeft="true"
         android:layout_marginRight="50dip" />
 
+    <!-- Title -->
     <TextView android:id="@+id/item_offer_details_title_label"
         android:text="Title"
         android:layout_toRightOf="@id/item_offer_details_image"
@@ -30,6 +31,7 @@
         android:layout_alignParentTop="true"
         style="@style/WorkItemLabel" />
       
+    <!-- Author -->
     <TextView android:id="@+id/item_offer_details_author_label"
         android:text="by author"
         android:layout_toRightOf="@id/item_offer_details_image"
@@ -37,8 +39,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
       
+    <!-- Price -->
     <TextView android:id="@+id/item_offer_details_price_label"
-        android:text="Price:"
+        android:text="Price"
         android:layout_toRightOf="@id/item_offer_details_image"
         android:layout_below="@id/item_offer_details_author_label"
         android:layout_width="wrap_content"
@@ -62,7 +65,14 @@
         android:layout_height="wrap_content" />
         
   </RelativeLayout>
+
+  <TextView
+    android:text="Product Information"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    style="@style/WorkItemSectionHeadingLabel" />
     
+  <!-- Publisher -->
   <TextView android:id="@+id/item_offer_publisher_label"
     android:text="Publisher"
     android:layout_width="fill_parent"
@@ -74,6 +84,7 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content" />
     
+  <!-- Date of Publication -->
   <TextView android:id="@+id/item_offer_publication_date_label"
     android:text="Date Published"
     android:layout_width="fill_parent"
@@ -85,6 +96,7 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content" />
     
+  <!-- Place of Publication -->
   <TextView android:id="@+id/item_offer_publication_place_label"
     android:text="Location Published"
     android:layout_width="fill_parent"
@@ -96,6 +108,7 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content" />
     
+  <!-- ISBN -->
   <TextView android:id="@+id/item_offer_isbn_label"
     android:text="ISBN"
     android:layout_width="fill_parent"
@@ -107,6 +120,7 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content" />
     
+  <!-- Condition -->
   <TextView android:id="@+id/item_offer_condition_label"
     android:text="Condition"
     android:layout_width="fill_parent"
@@ -118,6 +132,19 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content" />
     
+  <!-- Binding -->
+  <TextView android:id="@+id/item_offer_binding_label"
+    android:text="Binding"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    style="@style/WorkItemLabel" />
+
+  <TextView android:id="@+id/item_offer_binding"
+    android:text=""
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content" />
+    
+  <!-- Comments -->
   <TextView android:id="@+id/item_offer_comments_label"
     android:text="Comments"
     android:layout_width="fill_parent"
@@ -129,6 +156,7 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content" />
     
+  <!-- Notes -->
   <TextView android:id="@+id/item_offer_notes_label"
     android:text="Notes"
     android:layout_width="fill_parent"
@@ -140,6 +168,30 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content" />
     
+  <TextView
+    android:text="Seller Information"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    style="@style/WorkItemSectionHeadingLabel" />
+    
+  <!-- Seller -->
+  <TextView android:id="@+id/item_offer_seller_label"
+    android:text="Seller"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    style="@style/WorkItemLabel" />
+
+  <TextView android:id="@+id/item_offer_seller"
+    android:text=""
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content" />
+
+  <TextView android:id="@+id/item_offer_seller_location"
+    android:text=""
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content" />
+    
+  <!-- Seller Rating -->
   <TextView android:id="@+id/item_offer_seller_rating_label"
     android:text="Seller Reliability Rating:"
     android:layout_width="fill_parent"
@@ -154,6 +206,18 @@
     style="?android:attr/ratingBarStyleSmall"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content" />
-  
+
+  <!-- Shipped from -->
+  <TextView android:id="@+id/item_offer_shipped_from_label"
+    android:text="Shipped from"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    style="@style/WorkItemLabel" />
+
+  <TextView android:id="@+id/item_offer_shipped_from"
+    android:text=""
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content" />
+    
 </LinearLayout>
 </ScrollView>    

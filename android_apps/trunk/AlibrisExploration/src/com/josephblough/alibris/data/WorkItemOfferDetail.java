@@ -10,6 +10,8 @@ public class WorkItemOfferDetail extends ItemSearchResult {
     public String isbn;
     public Integer itemCondition;
     public String locationPublished;
+    public String locationShippedFrom;
+    public String media;
     
     public WorkItemOfferDetail(JSONObject json) {
 	super(json);
@@ -22,6 +24,8 @@ public class WorkItemOfferDetail extends ItemSearchResult {
 	if (json.has("fl_bookcond"))
 	    this.itemCondition = json.optInt("fl_bookcond");
 	this.locationPublished = json.optString("place_pub");
+	this.locationShippedFrom = json.optString("shiploc");
+	this.media = json.optString("media_type");
     }
 
     public String getItemConditionAsString() {
@@ -42,5 +46,24 @@ public class WorkItemOfferDetail extends ItemSearchResult {
 	    }
 	}
 	return "";
+    }
+    
+    public String getLocationShippedFromAsString() {
+	if ("DOM".equals(locationShippedFrom)) {
+	    return "Ships from the US";
+	}
+	else if ("INT".equals(locationShippedFrom)) {
+	    return "Ships from outside the US";
+	}
+	else if ("STOCK".equals(locationShippedFrom)) {
+	    return "Ships from Alibris' Nevada warehouse";
+	}
+	else if ("STOCKNEW".equals(locationShippedFrom)) {
+	    return "Ships from Ingram";
+	}
+	else if ("".equals(locationShippedFrom)) {
+	    
+	}
+	return null;
     }
 }

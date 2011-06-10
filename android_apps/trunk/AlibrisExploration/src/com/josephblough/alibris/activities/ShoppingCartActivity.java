@@ -41,7 +41,16 @@ public class ShoppingCartActivity extends ListActivity implements OnItemClickLis
         	builder.setMessage("Are you sure that you're ready to checkout?");
         	builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
         	    public void onClick(DialogInterface dialog, int whichButton) {
-        		app.checkOut(ShoppingCartActivity.this);
+                	AlertDialog.Builder builder2 = new AlertDialog.Builder(ShoppingCartActivity.this);
+                	builder2.setMessage("You will now be redirect to the Alibris website to checkout");
+                	builder2.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+			    
+			    public void onClick(DialogInterface dialog, int which) {
+	        		app.checkOut(ShoppingCartActivity.this);
+			    }
+			});
+                	
+                	builder2.show();
         	    }
         	});
 

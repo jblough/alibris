@@ -87,6 +87,8 @@ public class WorkOffersActivity extends ListActivity implements DataReceiver, On
 	}
 	else {
 	    if (this.workId > 0) {
+		// When first visiting this screen reset the filter
+		app.currentFilter = new OfferFilterCriteria();
 		retrieveOffers();
 	    }
 	}
@@ -361,6 +363,14 @@ public class WorkOffersActivity extends ListActivity implements DataReceiver, On
 			retrieveOffers();
 		    }
 		});
+
+		builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+		    public void onClick(DialogInterface dialog, int whichButton) {
+			// Canceled.
+			dialog.cancel();
+		    }
+		});
+		
 		builder.show();
 	    }
 	    else {

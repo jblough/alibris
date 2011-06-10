@@ -151,12 +151,36 @@ public class WorkOfferDetailActivity extends Activity implements OnClickListener
 	    findViewById(R.id.item_offer_condition).setVisibility(View.GONE);
 	}
 	
+	// Binding
+	if (offer.binding != null && !"".equals(offer.binding))
+	    ((TextView) findViewById(R.id.item_offer_binding)).setText(offer.binding);
+	else {
+	    findViewById(R.id.item_offer_binding).setVisibility(View.GONE);
+	    findViewById(R.id.item_offer_binding_label).setVisibility(View.GONE);
+	}
+		
 	// Notes
 	if (offer.notes != null && !"".equals(offer.notes))
 	    ((TextView) findViewById(R.id.item_offer_notes)).setText(Html.fromHtml(offer.notes));
 	else {
 	    findViewById(R.id.item_offer_notes).setVisibility(View.GONE);
 	    findViewById(R.id.item_offer_notes_label).setVisibility(View.GONE);
+	}
+	
+	// Seller
+	if (offer.seller != null && !"".equals(offer.seller))
+	    ((TextView) findViewById(R.id.item_offer_seller)).setText(offer.seller);
+	else {
+	    findViewById(R.id.item_offer_seller).setVisibility(View.GONE);
+	    findViewById(R.id.item_offer_seller_label).setVisibility(View.GONE);
+	}
+	
+	final String sellerLocation = generateSellerLocationText();
+	if (sellerLocation != null && !"".equals(sellerLocation)) {
+	    ((TextView) findViewById(R.id.item_offer_seller_location)).setText(sellerLocation);
+	}
+	else {
+	    findViewById(R.id.item_offer_seller_location).setVisibility(View.GONE);
 	}
 	
 	// Seller reliability rating
@@ -166,6 +190,15 @@ public class WorkOfferDetailActivity extends Activity implements OnClickListener
 	}
 	else
 	    findViewById(R.id.item_offer_seller_rating).setVisibility(View.GONE);
+
+	// Shipped from
+	final String shippedFrom = (offer.locationShippedFrom == null) ? null : offer.getLocationShippedFromAsString();
+	if (shippedFrom != null)
+	    ((TextView) findViewById(R.id.item_offer_shipped_from)).setText(shippedFrom);
+	else {
+	    findViewById(R.id.item_offer_shipped_from).setVisibility(View.GONE);
+	    findViewById(R.id.item_offer_shipped_from_label).setVisibility(View.GONE);
+	}
     }
 
     public void onClick(View v) {
@@ -187,5 +220,28 @@ public class WorkOfferDetailActivity extends Activity implements OnClickListener
         
         // This is done to reflect changes to the shopping cart that may have happened on the previous activity
         updateToggleCartButtonText();
+    }
+    
+    private String generateSellerLocationText() {
+	StringBuffer location = new StringBuffer();
+	if (offer.sellerCity != null && !"".equals(offer.sellerCity)) {
+	    location.append(offer.sellerCity);
+	}
+	
+	if (offer.sellerState != null && !"".equals(offer.sellerState)) {
+	    if (location.toString().length() > 0) {
+		location.append(", ");
+	    }
+	    location.append(offer.sellerState);
+	}
+	
+	if (offer.sellerCountry != null && !"".equals(offer.sellerCountry)) {
+	    if (location.toString().length() > 0) {
+		location.append(" ");
+	    }
+	    location.append(offer.sellerCountry);
+	}
+	
+	return location.toString();
     }
 }

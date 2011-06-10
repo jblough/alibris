@@ -61,6 +61,8 @@ public class WorkDetailActivity extends Activity implements OnItemClickListener 
     private Thread reviewThread = null;
     private Thread recommendationThread = null;
     
+    Button retryReviewsButton;
+    Button retryRecommendationsButton;
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -133,6 +135,24 @@ public class WorkDetailActivity extends Activity implements OnItemClickListener 
         	Log.e(TAG, e.getMessage(), e);
             }
         }
+        
+	retryReviewsButton = (Button)findViewById(R.id.item_details_retry_reviews_button);
+	retryReviewsButton.setOnClickListener(new OnClickListener() {
+	    
+	    public void onClick(View v) {
+		retryReviewsButton.setVisibility(View.GONE);
+		loadReviews();
+	    }
+	});
+	
+	retryRecommendationsButton = (Button)findViewById(R.id.item_details_retry_recommendations_button);
+	retryRecommendationsButton.setOnClickListener(new OnClickListener() {
+	    
+	    public void onClick(View v) {
+		retryRecommendationsButton.setVisibility(View.GONE);
+		loadRecommendations();
+	    }
+	});
     }
     
     private synchronized void populateWorkDetails() {
@@ -308,6 +328,7 @@ public class WorkDetailActivity extends Activity implements OnItemClickListener 
 
 	public void error(String error) {
 	    findViewById(R.id.item_detail_reviews_busy_indicator).setVisibility(View.GONE);
+	    retryReviewsButton.setVisibility(View.VISIBLE);
 	    Toast.makeText(WorkDetailActivity.this, error, Toast.LENGTH_SHORT).show();
 	}
 
@@ -351,6 +372,7 @@ public class WorkDetailActivity extends Activity implements OnItemClickListener 
     private class RecommendationsDataReceiver implements DataReceiver {
 	public void error(String error) {
 	    findViewById(R.id.item_detail_recommendations_busy_indicator).setVisibility(View.GONE);
+	    retryRecommendationsButton.setVisibility(View.VISIBLE);
 	    Toast.makeText(WorkDetailActivity.this, error, Toast.LENGTH_SHORT).show();
 	}
 

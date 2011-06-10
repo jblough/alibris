@@ -260,6 +260,14 @@ public class MainActivity extends ListActivity implements OnItemClickListener, O
 			}
 		    }
 		});
+
+		builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+		    public void onClick(DialogInterface dialog, int whichButton) {
+			// Canceled.
+			dialog.cancel();
+		    }
+		});
+		
 		builder.show();
 	    }
 	    else {

@@ -10,6 +10,8 @@ import com.josephblough.alibris.R;
 import com.josephblough.alibris.data.WorkItemOfferDetail;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.Html;
 import android.util.Log;
@@ -64,8 +66,28 @@ public class WorkOfferDetailActivity extends Activity implements OnClickListener
 	image.setTag(offer.imageURL);
 	//Log.d(TAG, "Displaying image " + image.getTag());
 	
-	ApplicationController app = (ApplicationController) getApplicationContext();
+	final ApplicationController app = (ApplicationController) getApplicationContext();
 	app.imageLoader.displayImage(offer.imageURL, image);
+
+	image.setOnClickListener(new OnClickListener() {
+	    
+	    public void onClick(View v) {
+		AlertDialog.Builder builder = new AlertDialog.Builder(WorkOfferDetailActivity.this);
+
+		builder.setTitle("Image Close-up");
+		ImageView tempImage = new ImageView(WorkOfferDetailActivity.this);
+		app.imageLoader.displayImage(offer.imageURL, tempImage);
+		builder.setView(tempImage);
+		builder.setNegativeButton("Close", new DialogInterface.OnClickListener() {
+		    public void onClick(DialogInterface dialog, int whichButton) {
+			// Canceled.
+			dialog.cancel();
+		    }
+		});
+		
+		builder.show();
+	    }
+	});
 	
 	((TextView) findViewById(R.id.item_offer_details_title_label)).setText(offer.title);
 	((TextView) findViewById(R.id.item_offer_details_author_label)).setText("By: " + offer.author);

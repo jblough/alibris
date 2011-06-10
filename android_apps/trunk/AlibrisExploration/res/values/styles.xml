@@ -60,7 +60,7 @@
         <item name="android:shadowRadius">3.0</item>
     </style>
     <style name="ReviewBodyLabel" parent="@android:style/TextAppearance">
-        <item name="android:textSize">10sp</item>
+        <item name="android:textSize">12sp</item>
         <item name="android:paddingTop">14dp</item>
         <item name="android:paddingBottom">14dp</item>
         <item name="android:layout_width">wrap_content</item>

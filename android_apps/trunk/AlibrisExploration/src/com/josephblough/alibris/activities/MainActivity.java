@@ -16,7 +16,6 @@ import org.json.JSONObject;
 import com.josephblough.alibris.adapters.SearchResultAdapter;
 import com.josephblough.alibris.data.SearchCriteria;
 import com.josephblough.alibris.data.SearchCriteriaCollection;
-import com.josephblough.alibris.data.SearchResult;
 import com.josephblough.alibris.data.WorkSearchResult;
 import com.josephblough.alibris.ApplicationController;
 import com.josephblough.alibris.R;
@@ -142,7 +141,7 @@ public class MainActivity extends ListActivity implements OnItemClickListener, O
 	    jsonResults = data.toString();
 	    JSONArray works = data.getJSONArray("work");
 	    int length = works.length();
-	    List<SearchResult> results = new ArrayList<SearchResult>();
+	    List<WorkSearchResult> results = new ArrayList<WorkSearchResult>();
 	    for (int i=0; i<length; i++) {
 		results.add(new WorkSearchResult(works.getJSONObject(i)));
 	    }

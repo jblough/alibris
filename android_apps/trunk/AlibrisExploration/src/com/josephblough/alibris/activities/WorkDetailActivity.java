@@ -16,7 +16,6 @@ import com.josephblough.alibris.R;
 import com.josephblough.alibris.adapters.SearchResultAdapter;
 import com.josephblough.alibris.data.ItemSearchResult;
 import com.josephblough.alibris.data.ReviewCollection;
-import com.josephblough.alibris.data.SearchResult;
 import com.josephblough.alibris.data.WorkSearchResult;
 import com.josephblough.alibris.tasks.DataReceiver;
 import com.josephblough.alibris.tasks.RecommendationRetrieverTask;
@@ -25,6 +24,8 @@ import com.josephblough.alibris.tasks.SearchResultsRetrieverTask;
 import com.josephblough.alibris.transport.SearchRequestConstants;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -55,6 +56,10 @@ public class WorkDetailActivity extends Activity implements OnItemClickListener 
     private String jsonRecommendations = null;
 
     private WorkSearchResult work;
+    
+    private Handler supplementalRetrievalsHandler = null;
+    private Thread reviewThread = null;
+    private Thread recommendationThread = null;
     
     
     @Override
@@ -91,33 +96,36 @@ public class WorkDetailActivity extends Activity implements OnItemClickListener 
 		    }
         	    
         	    // Alibris API only allows for 2 calls per second.
-        	    Thread reviewThread = new Thread(new Runnable() {
+        	    reviewThread = new Thread(new Runnable() {
 
         		public void run() {
         		    loadReviews();
         		}
         	    });
         	    
-        	    Thread recommendationThread = new Thread(new Runnable() {
+        	    recommendationThread = new Thread(new Runnable() {
 
         		public void run() {
         		    loadRecommendations();
         		}
         	    });
 
-        	    Handler handler = new Handler();
+        	    supplementalRetrievalsHandler = new Handler();
+        	    int delay = 1000;
         	    if (jsonReviews != null) {
         		new ReviewsDataReceiver().dataReceived(new JSONObject(jsonReviews));
         	    }
         	    else {
-            	    handler.postDelayed(reviewThread, 1000);
+        		supplementalRetrievalsHandler.postDelayed(reviewThread, delay);
+        		// add 1 second to the delay
+        		delay += 1000;
         	    }
         	    
         	    if (jsonRecommendations != null) {
         		new RecommendationsDataReceiver().dataReceived(new JSONObject(jsonRecommendations));
         	    }
         	    else {
-        		handler.postDelayed(recommendationThread, 2000);
+        		supplementalRetrievalsHandler.postDelayed(recommendationThread, delay);
         	    }
         	}
             }
@@ -132,8 +140,28 @@ public class WorkDetailActivity extends Activity implements OnItemClickListener 
 	image.setTag(work.imageURL);
 	//Log.d(TAG, "Displaying image " + image.getTag());
 	
-	ApplicationController app = (ApplicationController) getApplicationContext();
+	final ApplicationController app = (ApplicationController) getApplicationContext();
 	app.imageLoader.displayImage(work.imageURL, image);
+	
+	image.setOnClickListener(new OnClickListener() {
+	    
+	    public void onClick(View v) {
+		AlertDialog.Builder builder = new AlertDialog.Builder(WorkDetailActivity.this);
+
+		builder.setTitle("Image Close-up");
+		ImageView tempImage = new ImageView(WorkDetailActivity.this);
+		app.imageLoader.displayImage(work.imageURL, tempImage);
+		builder.setView(tempImage);
+		builder.setNegativeButton("Close", new DialogInterface.OnClickListener() {
+		    public void onClick(DialogInterface dialog, int whichButton) {
+			// Canceled.
+			dialog.cancel();
+		    }
+		});
+		
+		builder.show();
+	    }
+	});
 	
 	((TextView) findViewById(R.id.item_details_title)).setText(work.title);
 	((TextView) findViewById(R.id.item_details_author)).setText(work.author);
@@ -219,7 +247,9 @@ public class WorkDetailActivity extends Activity implements OnItemClickListener 
     }
     
     private void loadReviews(final boolean wait) {
-	Log.d(TAG, "loadReviews");
+	//Log.d(TAG, "loadReviews");
+	
+	findViewById(R.id.item_detail_reviews_busy_indicator).setVisibility(View.VISIBLE);
 	
 	ReviewRetrieverTask reviewRetriever = new ReviewRetrieverTask(new ReviewsDataReceiver());
 	reviewRetriever.execute(work.workId);
@@ -241,7 +271,9 @@ public class WorkDetailActivity extends Activity implements OnItemClickListener 
     }
     
     private void loadRecommendations(final boolean wait) {
-	Log.d(TAG, "loadRecommendations");
+	//Log.d(TAG, "loadRecommendations");
+	
+	findViewById(R.id.item_detail_recommendations_busy_indicator).setVisibility(View.VISIBLE);
 	
 	RecommendationRetrieverTask recommendationRetriever = new RecommendationRetrieverTask(new RecommendationsDataReceiver());
 	recommendationRetriever.execute(work.workId);
@@ -275,10 +307,13 @@ public class WorkDetailActivity extends Activity implements OnItemClickListener 
     private class ReviewsDataReceiver implements DataReceiver {
 
 	public void error(String error) {
+	    findViewById(R.id.item_detail_reviews_busy_indicator).setVisibility(View.GONE);
 	    Toast.makeText(WorkDetailActivity.this, error, Toast.LENGTH_SHORT).show();
 	}
 
 	public void dataReceived(final JSONObject data) {
+	    findViewById(R.id.item_detail_reviews_busy_indicator).setVisibility(View.GONE);
+	    
 	    jsonReviews = data.toString();
 	    ReviewCollection reviews = new ReviewCollection(data);
 	    TextView ratingLabel = (TextView)findViewById(R.id.item_details_overall_rating_label);
@@ -315,17 +350,20 @@ public class WorkDetailActivity extends Activity implements OnItemClickListener 
     
     private class RecommendationsDataReceiver implements DataReceiver {
 	public void error(String error) {
+	    findViewById(R.id.item_detail_recommendations_busy_indicator).setVisibility(View.GONE);
 	    Toast.makeText(WorkDetailActivity.this, error, Toast.LENGTH_SHORT).show();
 	}
 
 	public void dataReceived(JSONObject data) {
+	    findViewById(R.id.item_detail_recommendations_busy_indicator).setVisibility(View.GONE);
+
 	    ListView recommendationList = (ListView)findViewById(R.id.item_details_recommendations_list);
 	    recommendationList.setOnItemClickListener(WorkDetailActivity.this);
 	    try {
 		jsonRecommendations = data.toString();
 		JSONArray works = data.getJSONArray("work");
 		int length = works.length();
-		List<SearchResult> results = new ArrayList<SearchResult>();
+		List<WorkSearchResult> results = new ArrayList<WorkSearchResult>();
 		for (int i=0; i<length; i++) {
 		    results.add(new WorkSearchResult(works.getJSONObject(i)));
 		}
@@ -339,5 +377,17 @@ public class WorkDetailActivity extends Activity implements OnItemClickListener 
 		Log.e(TAG, e.getMessage(), e);
 	    }
 	}
+    }
+    
+    @Override
+    protected void onPause() {
+        super.onPause();
+        
+        /*if (supplementalRetrievalsHandler != null) {
+            if (reviewThread != null)
+        	supplementalRetrievalsHandler.removeCallbacks(reviewThread);
+            if (recommendationThread != null)
+        	supplementalRetrievalsHandler.removeCallbacks(recommendationThread);
+        }*/
     }
 }

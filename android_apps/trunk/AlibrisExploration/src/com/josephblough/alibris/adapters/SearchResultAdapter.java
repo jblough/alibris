@@ -1,8 +1,9 @@
 package com.josephblough.alibris.adapters;
 
+import java.text.NumberFormat;
 import java.util.List;
 
-import com.josephblough.alibris.data.SearchResult;
+import com.josephblough.alibris.data.WorkSearchResult;
 import com.josephblough.alibris.ApplicationController;
 import com.josephblough.alibris.R;
 
@@ -16,14 +17,15 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class SearchResultAdapter extends ArrayAdapter<SearchResult> {
+public class SearchResultAdapter extends ArrayAdapter<WorkSearchResult> {
     
     private static final String TAG = "SearchResultAdapter";
 
-    private static LayoutInflater inflater = null;
+    private static NumberFormat formatter = NumberFormat.getCurrencyInstance();
+    private LayoutInflater inflater = null;
     private ApplicationController app;
 
-    public SearchResultAdapter(Activity context, List<SearchResult> objects) {
+    public SearchResultAdapter(Activity context, List<WorkSearchResult> objects) {
 	super(context, R.layout.search_result_row, objects);
 	
 	Log.d(TAG, "SearchResultAdapter");
@@ -35,7 +37,7 @@ public class SearchResultAdapter extends ArrayAdapter<SearchResult> {
     public static class ViewHolder{
         public TextView titleText;
         public TextView authorText;
-        public TextView pubDateText;
+        public TextView priceText;
         public ImageView image;
     }
     
@@ -48,18 +50,27 @@ public class SearchResultAdapter extends ArrayAdapter<SearchResult> {
             holder = new ViewHolder();
             holder.titleText = (TextView)row.findViewById(R.id.search_result_title);
             holder.authorText = (TextView)row.findViewById(R.id.search_result_author);
-            holder.pubDateText = (TextView)row.findViewById(R.id.search_result_pub_date);
+            holder.priceText = (TextView)row.findViewById(R.id.search_result_lowest_price);
             holder.image = (ImageView)row.findViewById(R.id.search_result_image);
             row.setTag(holder);
 	}
         else
             holder = (ViewHolder)row.getTag();
 	
-	final SearchResult entry = (SearchResult)super.getItem(position);
+	final WorkSearchResult entry = (WorkSearchResult)super.getItem(position);
 
 	holder.titleText.setText(entry.title);
 	holder.authorText.setText(entry.author);
-	holder.pubDateText.setText("");
+	try {
+	    if (entry.minPrice == null)
+		holder.priceText.setText("");
+	    else
+		holder.priceText.setText("Lowest price: " + formatter.format(entry.minPrice));
+	}
+	catch (NumberFormatException e) {
+	    Log.e(TAG, e.getMessage(), e);
+	    holder.priceText.setText("");
+	}
 	
 	holder.image.setTag(entry.imageURL);
 	app.imageLoader.displayImage(entry.imageURL, holder.image);

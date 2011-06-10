@@ -94,13 +94,28 @@
     android:text=""
     android:layout_width="fill_parent"
     android:layout_height="wrap_content" />
-    
-  <TextView
-    android:text="Reviews"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    style="@style/WorkItemLabel" />
 
+  <LinearLayout android:orientation="horizontal"    
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content" >
+    
+    <TextView
+        android:text="Reviews"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/WorkItemLabel" />
+     
+    <ProgressBar android:id="@+id/item_detail_reviews_busy_indicator"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@android:style/Widget.ProgressBar.Small"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="10dip"
+        android:indeterminate="true" />
+    
+  </LinearLayout>
+  
     <TextView android:id="@+id/item_details_overall_rating_label"
         android:visibility="gone"
         android:text="Overall Rating:"
@@ -124,11 +139,26 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content" />
     
-  <TextView
-    android:text="Other Recommended Works "
+  <LinearLayout android:orientation="horizontal"    
     android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    style="@style/WorkItemLabel" />
+    android:layout_height="wrap_content" >
+    
+    <TextView
+        android:text="Other Recommended Works "
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/WorkItemLabel" />
+
+    <ProgressBar android:id="@+id/item_detail_recommendations_busy_indicator"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@android:style/Widget.ProgressBar.Small"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="10dip"
+        android:indeterminate="true" />
+    
+  </LinearLayout>
 
   <ListView android:id="@+id/item_details_recommendations_list"
     android:visibility="gone"

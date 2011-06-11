@@ -83,4 +83,14 @@ public class ShoppingCartActivity extends ListActivity implements OnItemClickLis
 	//Log.d(TAG, "Removed " + offer.sku + " from cart");
 	((ShoppingCartAdapter)getListAdapter()).notifyDataSetChanged();
     }
+    
+    @Override
+    protected void onResume() {
+        super.onResume();
+        
+        // This is done to reflect changes to the shopping cart that may have happened on the previous activity
+        if (getListAdapter() != null) {
+            ((ShoppingCartAdapter)getListAdapter()).notifyDataSetChanged();
+        }
+    }
 }

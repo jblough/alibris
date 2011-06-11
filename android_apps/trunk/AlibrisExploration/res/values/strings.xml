@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Alibris Exploration</string>
-    <string name="header_text">Content from</string>
+    <string name="app_name">Shopping Companion for Alibris</string>
+    <string name="header_text">Results provided by</string>
 </resources>

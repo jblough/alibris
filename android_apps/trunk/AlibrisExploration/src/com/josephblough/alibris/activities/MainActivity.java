@@ -32,6 +32,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -109,7 +110,9 @@ public class MainActivity extends ListActivity implements OnItemClickListener, O
 	submitButton.setVisibility(View.GONE);
 	
 	if (!displayedMessage) {
-	    Toast.makeText(this, "Use the search button or search menu item to redisplay the search field", Toast.LENGTH_LONG).show();
+	    Toast msg = Toast.makeText(this, "Use the search button or search menu item to redisplay the search field", Toast.LENGTH_LONG);
+	    msg.setGravity(Gravity.BOTTOM, 0, 0);
+	    msg.show();
 	    displayedMessage = true;
 	}
     }

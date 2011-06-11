@@ -42,7 +42,7 @@ public class ShoppingCartActivity extends ListActivity implements OnItemClickLis
         	builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
         	    public void onClick(DialogInterface dialog, int whichButton) {
                 	AlertDialog.Builder builder2 = new AlertDialog.Builder(ShoppingCartActivity.this);
-                	builder2.setMessage("You will now be redirect to the Alibris website to checkout");
+                	builder2.setMessage("You will now be redirected to the Alibris website to checkout");
                 	builder2.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 			    
 			    public void onClick(DialogInterface dialog, int which) {

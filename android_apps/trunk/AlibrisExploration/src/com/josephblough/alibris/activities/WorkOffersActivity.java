@@ -270,7 +270,20 @@ public class WorkOffersActivity extends ListActivity implements DataReceiver, On
 	if (app.currentFilter.maxPrice != null) {
 	    params.put(SearchRequestConstants.ITEMS_SEARCH_FIELD_PRICE_MAX, Double.toString(app.currentFilter.maxPrice));
 	}
+	
+	// Condition
+	// OfferFilterCriteria stores condition by array index so NEW = 0 and POOR = 5
+	// The actual parameter sent to Alibris is in the form NEW = 6 and POOR = 1, so we subtract from 6
+	if (app.currentFilter.minCondition != OfferFilterCriteria.FILTER_CONDITION_ANY) {
+	    params.put(SearchRequestConstants.ITEMS_SEARCH_FIELD_CONDITION_MIN, Integer.toString(6 - app.currentFilter.minCondition));
+	}
 
+	if (app.currentFilter.maxCondition != OfferFilterCriteria.FILTER_CONDITION_ANY) {
+	    // OfferFilterCriteria stores minimum conditin by array index so NEW = 0 and POOR = 5
+	    // The actual parameter sent to Alibris is in the form NEW = 6 and POOR = 1, so we subtract from 6
+	    params.put(SearchRequestConstants.ITEMS_SEARCH_FIELD_CONDITION_MAX, Integer.toString(6 - app.currentFilter.maxCondition));
+	}
+	
 	// Minimum seller rating
 	if (app.currentFilter.minSellerRating != OfferFilterCriteria.FILTER_SELLER_RATING_ANY) {
 	    // OfferFilterCriteria stores minimum seller rating by array index so BEST = 0 and POOR = 4

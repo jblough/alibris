@@ -108,13 +108,6 @@ public class MainActivity extends ListActivity implements OnItemClickListener, O
 	
 	searchTermField.setVisibility(View.GONE);
 	submitButton.setVisibility(View.GONE);
-	
-	if (!displayedMessage) {
-	    Toast msg = Toast.makeText(this, "Use the search button or search menu item to redisplay the search field", Toast.LENGTH_LONG);
-	    msg.setGravity(Gravity.BOTTOM, 0, 0);
-	    msg.show();
-	    displayedMessage = true;
-	}
     }
     
     private void showSearchFields() {
@@ -134,6 +127,13 @@ public class MainActivity extends ListActivity implements OnItemClickListener, O
 	    retriever.execute(params);
 
 	    hideSearchFields();
+
+	    if (!displayedMessage) {
+		Toast msg = Toast.makeText(this, "Use the search button or search menu item to redisplay the search field", Toast.LENGTH_LONG);
+		msg.setGravity(Gravity.BOTTOM, 0, 0);
+		msg.show();
+		displayedMessage = true;
+	    }
 	}
 	else {
 	    Toast.makeText(this, "No search terms entered", Toast.LENGTH_LONG).show();

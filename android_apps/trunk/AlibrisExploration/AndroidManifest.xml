@@ -3,6 +3,7 @@
       package="com.josephblough.alibris"
       android:versionCode="1"
       android:versionName="1.0">
+    <uses-sdk android:minSdkVersion="5" />
 
     <supports-screens android:smallScreens="true" 
                       android:normalScreens="true" 

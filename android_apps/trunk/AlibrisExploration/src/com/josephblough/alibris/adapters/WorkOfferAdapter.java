@@ -63,7 +63,12 @@ public class WorkOfferAdapter extends ArrayAdapter<ItemSearchResult> {
 	final ItemSearchResult entry = (ItemSearchResult)super.getItem(position);
 
 	holder.sellerText.setText("Seller: " + entry.seller);
-	holder.bindingText.setText(entry.binding);
+	if (entry.binding != null && !"".equals(entry.binding)) {
+	    holder.bindingText.setText(entry.binding);
+	}
+	else {
+	    holder.bindingText.setText("Binding: Unspecified");
+	}
 	holder.conditionText.setText("Condition: " + entry.condition);
 	holder.priceText.setText(formatter.format(entry.price));
 

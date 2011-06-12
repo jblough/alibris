@@ -57,7 +57,7 @@
 
     <Button android:id="@+id/toggle_cart_button"
         android:text="Add to cart"
-        android:layout_toRightOf="@id/item_offer_details_price_label"
+        android:layout_toRightOf="@id/item_offer_details_price"
         android:layout_below="@id/item_offer_details_author_label"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"

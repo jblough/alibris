@@ -29,6 +29,7 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -418,6 +419,10 @@ public class MainActivity extends ListActivity implements OnItemClickListener, O
 	AlertDialog.Builder builder = new AlertDialog.Builder(this);
 	builder.setTitle("Change Search Options");
 	View view = getLayoutInflater().inflate(R.layout.search_options, null);
+	TypedArray array = getTheme().obtainStyledAttributes(new int[] { android.R.attr.colorBackground }); 
+	int backgroundColor = array.getColor(0, 0xFFFFFF); 
+	array.recycle();
+	view.setBackgroundColor(backgroundColor);
 	final Spinner searchFieldSpinner = (Spinner)view.findViewById(R.id.search_field);
 	final Spinner searchMediaSpinner = (Spinner)view.findViewById(R.id.search_media);
 	final Spinner searchSortSpinner = (Spinner)view.findViewById(R.id.search_sort);

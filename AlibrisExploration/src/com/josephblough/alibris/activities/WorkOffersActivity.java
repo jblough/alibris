@@ -31,6 +31,7 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -187,6 +188,10 @@ public class WorkOffersActivity extends ListActivity implements DataReceiver, On
 	AlertDialog.Builder builder = new AlertDialog.Builder(this);
 	builder.setTitle("Change Filter Options");
 	View view = getLayoutInflater().inflate(R.layout.work_offers_filter, null);
+	TypedArray array = getTheme().obtainStyledAttributes(new int[] { android.R.attr.colorBackground }); 
+	int backgroundColor = array.getColor(0, 0xFFFFFF); 
+	array.recycle();
+	view.setBackgroundColor(backgroundColor);
 	final EditText minPriceField = (EditText)view.findViewById(R.id.work_offers_filter_min_price);
 	final EditText maxPriceField = (EditText)view.findViewById(R.id.work_offers_filter_max_price);
 	final Spinner minConditionField = (Spinner)view.findViewById(R.id.work_offers_filter_min_condition);

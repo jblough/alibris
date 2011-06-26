@@ -20,6 +20,7 @@
         android:layout_height="150dip"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
+        android:layout_marginLeft="5dip"
         android:layout_marginRight="50dip" />
       
     <TextView android:id="@+id/item_details_min_price_label"

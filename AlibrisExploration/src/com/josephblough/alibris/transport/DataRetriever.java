@@ -52,7 +52,9 @@ public class DataRetriever {
     public static JSONObject getReviews(final Integer work) {
 	try {
 	    HttpClient client = new DefaultHttpClient();
-	    HttpGet httpMethod = new HttpGet(REVIEW_URL.replaceAll(WORK_ID_PARAMETER_REPLACEMENT_STRING, work.toString()));
+	    final String url = REVIEW_URL.replaceAll(WORK_ID_PARAMETER_REPLACEMENT_STRING, work.toString());
+	    Log.d(TAG, "url: " + url);
+	    HttpGet httpMethod = new HttpGet(url);
 	    ResponseHandler<String> handler = new BasicResponseHandler();
 	    String response = client.execute(httpMethod, handler);
 
@@ -67,7 +69,9 @@ public class DataRetriever {
     public static JSONObject getRecommendations(final Integer work) {
 	try {
 	    HttpClient client = new DefaultHttpClient();
-	    HttpGet httpMethod = new HttpGet(RECOMMEND_URL.replaceAll(WORK_ID_PARAMETER_REPLACEMENT_STRING, work.toString()));
+	    final String url = RECOMMEND_URL.replaceAll(WORK_ID_PARAMETER_REPLACEMENT_STRING, work.toString());
+	    Log.d(TAG, "url: " + url);
+	    HttpGet httpMethod = new HttpGet(url);
 	    ResponseHandler<String> handler = new BasicResponseHandler();
 	    String response = client.execute(httpMethod, handler);
 
